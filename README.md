@@ -1,5 +1,8 @@
 # client
 
+## 報告 PDF 位置
+See [documents](https://github.com/ZhiRongDev/ProjectMgmt/tree/main/documents)
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
