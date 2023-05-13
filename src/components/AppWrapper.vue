@@ -11,16 +11,16 @@
         </v-navigation-drawer>
         <v-main class="bg-grey-lighten-2">
             <slot></slot>
-		</v-main>
+        </v-main>
     </v-app>
 </template>
 
 <script>
 export default {
-	data: () => ({
-		drawer: false,
-	}),
-	mounted() {
-	}
+    data: () => ({
+        drawer: false,
+    }),
+    mounted() {
+    }
 }
 </script>
