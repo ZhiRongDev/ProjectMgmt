@@ -8,16 +8,6 @@ export default defineStore('ProjectStatus', {
             Project: {
                 Project_ID: '',
                 Project_Name: '',
-                Project_Color: '',
-                collaborators: [
-                    {
-                        User_ID: '',
-                        User_Name: '',
-                        User_Mail: '',
-                        User_Avatar: '',
-                        User_Password: ''
-                    }
-                ],
             },
         }
     },

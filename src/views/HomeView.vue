@@ -9,42 +9,40 @@
 					<v-col class="mt-2" cols="12">
 						<h2>專案</h2>
 					</v-col>
-					<template v-for="n in 1" :key="n">
-						<v-col v-for="(item, j) in project" :key="`${n}${j}`" cols="12" sm="6" md="4">
-							<div>
-								<v-hover v-slot="{ isHovering, props }">
-									<v-card class="mx-auto" height="200" v-bind="props">
-										<!-- <v-img src="https://cdn.vuetifyjs.com/images/cards/forest-art.jpg"></v-img> -->
+					<v-col v-for="(item, j) in project_list" :key="item.Project_ID" cols="12" sm="6" md="4">
+						<div>
+							<v-hover v-slot="{ isHovering, props }">
+								<v-card class="mx-auto" height="200" v-bind="props" :color="item.Project_Color">
+									<!-- <v-img src="https://cdn.vuetifyjs.com/images/cards/forest-art.jpg"></v-img> -->
 
-										<v-card-text class="d-flex justify-center align-center h-100">
-											<div>
-												<v-chip size="x-large" variant="elevated">
-													{{ item }}
-												</v-chip>
-											</div>
-										</v-card-text>
+									<v-card-text class="d-flex justify-center align-center h-100">
+										<div>
+											<v-chip size="x-large" variant="elevated">
+												{{ item.Project_Name }}
+											</v-chip>
+										</div>
+									</v-card-text>
 
-										<v-overlay :model-value="isHovering" contained scrim="#036358"
-											class="align-center justify-center">
-											<v-row>
-												<v-col>
-													<v-btn variant="flat" color="secondary"
-														@click="dialog_update = true">更改</v-btn>
-												</v-col>
-												<v-col>
-													<v-btn variant="flat" color="primary">進入</v-btn>
-												</v-col>
-												<v-col>
-													<v-btn variant="flat" color="red"
-														@click="dialog_delete = true">刪除</v-btn>
-												</v-col>
-											</v-row>
-										</v-overlay>
-									</v-card>
-								</v-hover>
-							</div>
-						</v-col>
-					</template>
+									<v-overlay :model-value="isHovering" contained scrim="#036358"
+										class="align-center justify-center">
+										<v-row>
+											<v-col>
+												<v-btn variant="flat" color="secondary"
+													@click="dialog_update = true">更改</v-btn>
+											</v-col>
+											<v-col>
+												<v-btn variant="flat" color="primary">進入</v-btn>
+											</v-col>
+											<v-col>
+												<v-btn variant="flat" color="red" @click="dialog_delete = true">刪除</v-btn>
+											</v-col>
+										</v-row>
+									</v-overlay>
+								</v-card>
+							</v-hover>
+						</div>
+					</v-col>
+
 					<!-- 新增專案 -->
 					<v-col cols="12" sm="6" md="4">
 						<v-btn block class="mx-auto" height="200" @click="dialog_create = true">
@@ -159,6 +157,8 @@
 
 <script>
 import axios from 'axios';
+import { mapState, mapActions } from 'pinia'
+import UserStatus from '@/stores/UserStatus'
 import AppWrapper from '../components/AppWrapper.vue';
 
 export default {
@@ -168,10 +168,25 @@ export default {
 		dialog_create: false,
 		dialog_delete: false,
 		dialog_update: false,
-		project: ["專案 1", "專案 2", "專案 113"]
+		project_list: [
+			{
+				Project_ID: '123',
+				Project_Name: '專案 1',
+				Project_Color: '#FFCDD2'
+			},
+			{
+				Project_ID: '456',
+				Project_Name: '專案 2',
+				Project_Color: '#311B92'
+			}
+		],
+
 	}),
 	components: {
 		AppWrapper
+	},
+	computed: {
+		...mapState(UserStatus, ['User'])
 	},
 	mounted() {
 	}

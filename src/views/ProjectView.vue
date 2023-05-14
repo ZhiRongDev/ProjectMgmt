@@ -2,6 +2,7 @@
     <AppWrapper>
         <!-- https://vuetifyjs.com/en/components/buttons/#discord-event -->
         <div class="pa-5 task-container overflow-x-auto">
+            <h2 class="mb-2">專案 1</h2>
             <template v-for="n in 2" :key="n">
                 <v-card class="mr-5 task-card" color="#36393f" theme="dark" variant="flat">
                     <v-sheet color="#202225">
@@ -81,9 +82,8 @@
 
                             <div class="pa-4 d-flex align-center justify-end">
                                 <v-btn class="mr-3 text-none" color="#4f545c" variant="flat">
-                                    Share
+                                    查看
                                 </v-btn>
-
                                 <v-btn class="text-none bg-red" variant="flat">
                                     刪除
                                 </v-btn>
@@ -101,51 +101,13 @@
 </template>
 
 <script>
+import axios from "axios";
 import AppWrapper from '../components/AppWrapper.vue';
 
 export default {
     data: () => ({
         model: null,
-        Task_List: [
-            {
-                Task_List_ID: '12345',
-                Task_List_Name: 'List1',
-                Task_List_Status: true,
-                Task_Card: [
-                    {
-                        Task_Card_ID: '54321',
-                        Task_Card_Name: 'Card1',
-                        Task_Card_Text: 'Card1 text',
-                        Task_Card_StartTime: '1998',
-                        Task_Card_EndTime: '2021',
-                        Task_Card_Status: true,
-                        Todo: [
-                            {
-                                Todo_ID: 'abc',
-                                Todo_Text: 'todo text',
-                                Todo_Status: true
-                            }
-                        ],
-                        Comment: [
-                            {
-                                Commenter_ID: 'cba',
-                                Commenter_Name: 'commenter_Name',
-                                Comment_Text: 'Comment_Text'
-                            }
-                        ],
-                        collaborators: [
-                            {
-                                User_ID: '',
-                                User_Name: '',
-                                User_Mail: '',
-                                User_Avatar: '',
-                                User_Password: ''
-                            }
-                        ],
-                    }
-                ]
-            },
-        ],
+        Task_List: [],
         cache_data: {
 
         },
@@ -157,12 +119,30 @@ export default {
         AppWrapper
     },
     methods: {
+        getTaskList(data) {
+            this.Task_List = data
+            console.log(this.Task_List[0].Task_List_ID)
+        },
         cancelEdit() {
             this.task_list_title_edit = false;
         },
         doneEdit() {
             console.log("ok")
         }
+    },
+    mounted() {
+        let self = this;
+
+        axios.get('http://127.0.0.1:5001/tasklist')
+            .then(function (response) {
+                console.log(response);
+                self.getTaskList(response.data.Task_List)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .finally(function () {
+            });
     }
 }
 </script>
