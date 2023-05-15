@@ -1,15 +1,12 @@
-<script setup>
-</script>
-
 <template>
 	<main>
 		<AppWrapper>
 			<v-container>
 				<v-row>
 					<v-col class="mt-2" cols="12">
-						<h2>專案</h2>
+						<h2>你的專案</h2>
 					</v-col>
-					<v-col v-for="(item, j) in project_list" :key="item.Project_ID" cols="12" sm="6" md="4">
+					<v-col v-for="(item, j) in Project" :key="item.Project_ID" cols="12" sm="6" md="4">
 						<div>
 							<v-hover v-slot="{ isHovering, props }">
 								<v-card class="mx-auto" height="200" v-bind="props" :color="item.Project_Color">
@@ -168,19 +165,7 @@ export default {
 		dialog_create: false,
 		dialog_delete: false,
 		dialog_update: false,
-		project_list: [
-			{
-				Project_ID: '123',
-				Project_Name: '專案 1',
-				Project_Color: '#FFCDD2'
-			},
-			{
-				Project_ID: '456',
-				Project_Name: '專案 2',
-				Project_Color: '#311B92'
-			}
-		],
-
+		Project: [],
 	}),
 	components: {
 		AppWrapper
@@ -188,7 +173,23 @@ export default {
 	computed: {
 		...mapState(UserStatus, ['User'])
 	},
+	methods: {
+		getProject() {
+			let self = this;
+			axios.get('http://127.0.0.1:5001/project')
+			.then(function (response) {
+				console.log(response);
+				self.Project = response.data.Project;
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
+			.finally(function () {
+			});
+		}
+	},
 	mounted() {
+		this.getProject();
 	}
 }
 </script>

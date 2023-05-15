@@ -9,11 +9,23 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-
-# sanity check route
-@app.route('/ping', methods=['GET'])
-def ping_pong():
-    return jsonify('pong!')
+@app.route('/project', methods=['GET'])
+def get_project():
+    data = {
+        "Project": [
+            {
+                "Project_ID": "abc",
+                "Project_Name": "project 1",
+                "Project_Color": "pink",
+            },
+            {
+                "Project_ID": "def",
+                "Project_Name": "project 2",
+                "Project_Color": "blue",
+            }
+        ]
+    }
+    return jsonify(data)
 
 @app.route('/tasklist', methods=['GET'])
 def get_task_list():
