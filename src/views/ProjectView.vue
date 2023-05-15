@@ -13,15 +13,16 @@
                             </template>
 
                             <!-- edit title -->
-                            <h4 v-if="list.Task_List_ID !== cache_Task_List.Task_List_ID"
-                                @dblclick="edit_TaskList(list.Task_List_ID)">{{
-                                    list.Task_List_Name }}</h4>
-                            <input v-else type="text" class="pl-1 w-100 bg-grey-lighten-5" v-model="list.Task_List_Name"
+                            <input
+                                v-if="list.Task_List_ID === cache_Task_List.Task_List_ID && edit_target === 'Task_List_Name'"
+                                type="text" class="pl-1 w-100 bg-grey-lighten-5" v-model="cache_Task_List.Task_List_Name"
                                 @keyup.esc="edit_TaskList()" @blur="edit_TaskList()" @keyup.enter="doneEdit()">
+                            <h4 v-else @dblclick="edit_TaskList(list, target = 'Task_List_Name')">{{
+                                list.Task_List_Name }}</h4>
 
                             <template v-slot:append>
                                 <v-btn icon="$edit" size="small" variant="text"
-                                    @click="edit_TaskList(list.Task_List_ID)"></v-btn>
+                                    @click="edit_TaskList(list, target = 'Task_List_Name')"></v-btn>
                                 <v-btn icon="$close" size="small" variant="text"></v-btn>
                             </template>
                         </v-card-item>
@@ -49,15 +50,34 @@
                                 </v-card-title>
 
                                 <div class="py-2">
-                                    <div v-if="!task_list_title_edit">
-                                        <p class="text-h6 d-inline-block">{{ task.Task_Card_Name }}</p>
+                                    <div class="d-flex justify-space-between align-center">
+                                        <div class="w-100">
+                                            <input
+                                                v-if="task.Task_Card_ID === cache_Task_Card.Task_Card_ID && edit_target === 'Task_Card_Name'"
+                                                type="text" class="pl-1 w-100 bg-grey-lighten-5"
+                                                v-model="cache_Task_Card.Task_Card_Name" @keyup.esc="edit_TaskCard()"
+                                                @blur="edit_TaskCard()" @keyup.enter="doneEdit()">
+                                            <h4 v-else class="text-h6"
+                                                @dblclick="edit_TaskCard(task, target = 'Task_Card_Name')">
+                                                {{ task.Task_Card_Name }}
+                                            </h4>
+                                        </div>
+                                        <v-btn icon="$edit" size="small" variant="text"
+                                            @click="edit_TaskCard(task, target = 'Task_Card_Name')"></v-btn>
                                     </div>
-                                    <input v-else type="text" class="pl-1 w-100 bg-grey-lighten-5" v-model="task_list_title"
-                                        @keyup.esc="cancelEdit()" @blur="cancelEdit()" @keyup.enter="doneEdit()">
 
-                                    <p class="font-weight-light text-medium-emphasis task_card_text mb-3">
-                                        {{ task.Task_Card_Text }}
-                                    </p>
+                                    <div class="d-flex justify-space-between align-center">
+                                        <v-textarea
+                                            v-if="task.Task_Card_ID === cache_Task_Card.Task_Card_ID && edit_target === 'Task_Card_Text'"
+                                            v-model="cache_Task_Card.Task_Card_Text"
+                                            :model-value="cache_Task_Card.Task_Card_Text"
+                                            @blur="edit_TaskCard()"></v-textarea>
+                                        <p v-else class="font-weight-light text-medium-emphasis task_card_text mb-3"
+                                            @dblclick="edit_TaskCard(task, target = 'Task_Card_Text')">
+                                            {{ task.Task_Card_Text }}
+                                        </p>
+                                    </div>
+
                                     <div>
                                         <v-tooltip text="1 Fri Dec 16th - 9:00" location="bottom">
                                             <template v-slot:activator="{ props }">
@@ -108,40 +128,27 @@ export default {
         model: null,
         Task_List: [],
         Project_WorksOn: [],
-        cache_Task_List: {
-            Task_List_ID: '',
-            Task_List_Name: '',
-            Task_List_Status: null,
-        },
-        cache_Task_Card: {
-            Task_Card_ID: '',
-            Task_Card_Name: '',
-            Task_Card_Text: '',
-            Task_Card_StartTime: '',
-            Task_Card_EndTime: '',
-            Task_Card_Status: null,
-            Task_WorksOn: []
-        },
-        cache_Todo: {
-            Todo_ID: '',
-            Todo_Text: '',
-            Todo_Status: null,
-        },
-        cache_Comment: {
-            Commenter_ID: '',
-            Commenter_Name: '',
-            Comment_Text: '',
-        },
-
-        task_list_title: '測試標題',
-        task_list_title_edit: false,
-
-        test: {}
+        // caches are used for update, they should always be empty objects when not updating.
+        cache_Task_List: {},
+        cache_Task_Card: {},
+        cache_Todo: {},
+        cache_Comment: {},
+        edit_target: ""
     }),
     components: {
         AppWrapper
     },
     methods: {
+        isObjEmpty(obj) {
+            return Object.keys(obj).length === 0;
+        },
+        clearCache() {
+            this.cache_Task_List = {};
+            this.cache_Task_Card = {};
+            this.cache_Todo = {};
+            this.cache_Comment = {};
+            this.edit_target = "";
+        },
         getTaskList() {
             let self = this;
             axios.get('http://127.0.0.1:5001/tasklist')
@@ -155,16 +162,24 @@ export default {
                 .finally(function () {
                 });
         },
-        edit_TaskList(id = {}) {
-            if (this.cache_Task_List.Task_List_ID === id) {
-                this.cache_Task_List.Task_List_ID = {};
+        edit_TaskList(list = {}, target = "") {
+            this.edit_target = target;
+            // if ckick the </v-btn icon="$edit"> once again
+            if (list.Task_List_ID === this.cache_Task_List.Task_List_ID) {
+                this.clearCache()
             } else {
-                this.cache_Task_List.Task_List_ID = id;
+                this.cache_Task_List.Task_List_ID = list.Task_List_ID;
+                this.cache_Task_List[`${target}`] = list[`${target}`];
             }
         },
-
-        cancelEdit() {
-            this.task_list_title_edit = false;
+        edit_TaskCard(task = {}, target = "") {
+            this.edit_target = target;
+            if (task.Task_Card_ID === this.cache_Task_Card.Task_Card_ID) {
+                this.clearCache()
+            } else {
+                this.cache_Task_Card.Task_Card_ID = task.Task_Card_ID;
+                this.cache_Task_Card[`${target}`] = task[`${target}`];
+            }
         },
         doneEdit() {
             console.log("ok")
@@ -178,22 +193,13 @@ export default {
 
 <style>
 /* Small devices */
-@media (min-width: 576px) {
-}
+@media (min-width: 576px) {}
 
 /* Medium devices */
-@media (min-width: 768px) {
-    .task-card {
-        width: 80%;
-    }
-}
+@media (min-width: 768px) {}
 
 /* Large devices */
-@media (min-width: 992px) {
-    .task-card {
-        width: 30%;
-    }
-}
+@media (min-width: 992px) {}
 
 .task-container {
     height: 100%;
@@ -201,6 +207,7 @@ export default {
 }
 
 .task-card {
+    width: 370px;
     display: inline-block;
     vertical-align: top;
 }
