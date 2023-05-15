@@ -11,6 +11,10 @@
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.7",
+    "@fullcalendar/daygrid": "^6.1.7",
+    "@fullcalendar/interaction": "^6.1.7",
+    "@fullcalendar/vue3": "^6.1.7",
     "axios": "^1.4.0",
     "pinia": "^2.0.35",
     "vue": "^3.2.47",

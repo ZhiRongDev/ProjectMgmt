@@ -9,6 +9,7 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+
 @app.route('/project', methods=['GET'])
 def get_project():
     data = {
@@ -26,6 +27,7 @@ def get_project():
         ]
     }
     return jsonify(data)
+
 
 @app.route('/tasklist', methods=['GET'])
 def get_task_list():
@@ -59,11 +61,11 @@ def get_task_list():
                         ],
                         "collaborators": [
                             {
-                                "User_ID": '',
-                                "User_Name": '',
-                                "User_Mail": '',
-                                "User_Avatar": '',
-                                "User_Password": ''
+                                "User_ID": '2320948',
+                                "User_Name": 'jordan',
+                                "User_Mail": 'jordan990301@gmail.com',
+                                "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                                "User_Password": 'asdjisa_djosaid'
                             }
                         ],
                     }
@@ -72,6 +74,7 @@ def get_task_list():
         ],
     }
     return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run()
