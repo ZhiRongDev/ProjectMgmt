@@ -28,7 +28,7 @@
 													@click="dialog_update = true">更改</v-btn>
 											</v-col>
 											<v-col>
-												<v-btn variant="flat" color="primary">進入</v-btn>
+												<v-btn variant="flat" color="primary" @click="goToProject(item)">進入</v-btn>
 											</v-col>
 											<v-col>
 												<v-btn variant="flat" color="red" @click="dialog_delete = true">刪除</v-btn>
@@ -136,7 +136,7 @@
 		<v-dialog v-model="dialog_delete" width="auto" persistent>
 			<v-card>
 				<v-card-text>
-					你確定要刪除 專案 ?
+					你確定要刪除專案 ?
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
@@ -176,7 +176,7 @@ export default {
 	methods: {
 		getProject() {
 			let self = this;
-			axios.get('http://127.0.0.1:5001/project')
+			axios.get(`${import.meta.env.VITE_FLASK_URL}/project`)
 			.then(function (response) {
 				console.log(response);
 				self.Project = response.data.Project;
@@ -186,7 +186,13 @@ export default {
 			})
 			.finally(function () {
 			});
+		},
+
+		goToProject(target) {
+			// console.log(target);
+			this.$router.push({ path: '/project', query: { projectID: target.Project_ID } })
 		}
+
 	},
 	mounted() {
 		this.getProject();

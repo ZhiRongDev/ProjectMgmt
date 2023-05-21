@@ -1,6 +1,5 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
-
 
 # instantiate the app
 app = Flask(__name__)
@@ -9,6 +8,34 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+@app.route('/user/sign-in', methods=['POST'])
+def signIn():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        # post_data 格式
+        
+        print(post_data)
+        
+        response_object = {'status': 'success'}
+        return jsonify(response_object)
+
+@app.route('/user/sign-up', methods=['POST'])
+def signUp():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        # post_data 格式
+        # {
+        #     User_ID: "",
+        #     User_Name: "",
+        #     User_Mail: "",
+        #     User_Avatar: "",
+        #     User_Password: ""
+        # }
+
+        # print(post_data)
+        response_object = {'status': 'success'}
+        return jsonify(response_object)
+        
 
 @app.route('/project', methods=['GET'])
 def get_project():
@@ -18,17 +45,33 @@ def get_project():
                 "Project_ID": "abc",
                 "Project_Name": "project 1",
                 "Project_Color": "pink",
+                "Project_Collaborators": [
+                    {
+                        "User_ID": '2320948',
+                        "User_Name": 'selina',
+                        "User_Mail": 'selina@gmail.com',
+                        "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                    }
+                ]
             },
             {
                 "Project_ID": "def",
                 "Project_Name": "project 2",
                 "Project_Color": "blue",
+                "Project_Collaborators": [
+                    {
+                        "User_ID": '2320948',
+                        "User_Name": 'selina',
+                        "User_Mail": 'selina@gmail.com',
+                        "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                    }
+                ]
             }
         ]
     }
     return jsonify(data)
 
-
+# GET 方法 -> 一次取得所有需要的資料 
 @app.route('/tasklist', methods=['GET'])
 def get_task_list():
     data = {
@@ -62,11 +105,10 @@ def get_task_list():
                         "collaborators": [
                             {
                                 "User_ID": '2320948',
-                                "User_Name": 'jordan',
-                                "User_Mail": 'jordan990301@gmail.com',
+                                "User_Name": 'selina',
+                                "User_Mail": 'selina@gmail.com',
                                 "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
-                                "User_Password": 'asdjisa_djosaid'
-                            }
+                            },
                         ],
                     }
                 ]

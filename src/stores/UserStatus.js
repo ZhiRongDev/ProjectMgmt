@@ -18,5 +18,8 @@ export default defineStore('UserStatus', {
     getters: {},
     // 等於 methods
     actions: {
+        checkAuth() {
+        },
+
     }
 })
