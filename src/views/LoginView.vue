@@ -69,10 +69,10 @@
 	</v-row>
 
 	<!-- 提示訊息 -->
-	<v-snackbar v-model="snackbar_register_success" timeout="2000">
-		註冊成功
+	<v-snackbar v-model="snackbar" timeout="2000">
+		{{ snackbar_msg }}
 		<template v-slot:actions>
-			<v-btn color="blue" variant="text" @click="snackbar_register_success = false">
+			<v-btn color="blue" variant="text" @click="snackbar = false">
 				Close
 			</v-btn>
 		</template>
@@ -91,6 +91,7 @@ export default {
 		User_Password: null,
 		loading: false,
 		dialog: false,
+		
 		cache: {
 			User_ID: "",
 			User_Name: "",
@@ -98,7 +99,9 @@ export default {
 			User_Avatar: "",
 			User_Password: ""
 		},
-		snackbar_register_success: false,
+
+		snackbar_msg: "",
+		snackbar: false,
 	}),
 
 	methods: {
@@ -121,6 +124,7 @@ export default {
 			}
 			this.cache = JSON.parse(JSON.stringify(cache)); // DeepCopy
 		},
+
 		signIn() {
 			let self = this;
 			let url = `${import.meta.env.VITE_FLASK_URL}/user/sign-in`;
@@ -130,12 +134,15 @@ export default {
 			}
 			axios.post(url, data)
 				.then((res) => {
-					// console.log(res);
-					alert("登入成功")
+					console.log(res);
+					let UserInfo = res.data.UserInfo;
+					localStorage.setItem('UserInfo', JSON.stringify(UserInfo))
+					this.$router.push({ path: '/home' })
 				})
 				.catch((err) => {
-				})
-				.finally(() => {
+					// console.log(err);
+					this.snackbar_msg = err.response.data;
+					this.snackbar = true;
 				})
 		},
 
@@ -149,12 +156,13 @@ export default {
 				.then((res) => {
 					// console.log(res);
 					self.clearCache();
+					this.snackbar_msg = err.response.data;
 					this.dialog = false;
-					this.snackbar_register_success = true;
+					this.snackbar = true;
 				})
 				.catch((err) => {
-				})
-				.finally(() => {
+					this.snackbar_msg = err.response.data;
+					this.snackbar = true;
 				})
 		}
 	},

@@ -174,6 +174,7 @@ export default {
 		...mapState(UserStatus, ['User'])
 	},
 	methods: {
+		...mapActions(UserStatus, ['checkAuth']),
 		getProject() {
 			let self = this;
 			axios.get(`${import.meta.env.VITE_FLASK_URL}/project`)
@@ -195,6 +196,7 @@ export default {
 
 	},
 	mounted() {
+		this.checkAuth();
 		this.getProject();
 	}
 }

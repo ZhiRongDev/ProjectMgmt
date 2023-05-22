@@ -10,7 +10,6 @@ export default defineStore('UserStatus', {
                 User_Name: '',
                 User_Mail: '',
                 User_Avatar: '',
-                User_Password: ''
             },
         }
     },
@@ -18,8 +17,26 @@ export default defineStore('UserStatus', {
     getters: {},
     // 等於 methods
     actions: {
-        checkAuth() {
+        logout() {
+            localStorage.removeItem('UserInfo')
+            this.router.replace('/')
         },
-
+        load_UserInfo() {
+            const UserInfo = JSON.parse(localStorage.getItem('UserInfo'))
+            this.User.User_ID = UserInfo.User_ID;
+            this.User.User_Name = UserInfo.User_Name;
+            this.User.User_Mail = UserInfo.User_Mail;
+            this.User.User_Avatar = UserInfo.User_Avatar;
+        },
+        checkAuth() {
+            if (
+                !localStorage.getItem('UserInfo') ||
+                localStorage.getItem('UserInfo').User_ID === null
+            ) {
+                this.logout()
+            } else {
+                this.load_UserInfo()
+            }
+        },
     }
 })
