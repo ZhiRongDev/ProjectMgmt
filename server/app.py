@@ -138,92 +138,90 @@ def example():
             )
 """
 
-# 登入功能，回傳 User 資訊
-@app.route('/user/sign-in', methods=['POST'])
-def signIn():
+@app.route('/user', methods=['POST'])
+def user_operation():
+    type = request.args.get('type')
     if request.method == 'POST':
-        # post_data format
-        # {
-        #   'User_Mail': "",
-		# 	'User_Password': "",
-        # }
+        # 登入功能，回傳 User 資訊
+        if (type == "sign-in"):
+            # post_data format
+            # {
+            #   'User_Mail': "",
+            # 	'User_Password': "",
+            # }
 
-        post_data = request.get_json()
-        Mail = post_data['User_Mail']
-        Password = post_data['User_Password']
+            post_data = request.get_json()
+            Mail = post_data['User_Mail']
+            Password = post_data['User_Password']
 
-        # if mail in DB
-        if (True):
-            # if passward is correct
+            # if mail in DB
             if (True):
-                # return User information
-                return_data = {
-                    "User_ID": "123",
-                    "User_Name": "jordan",
-                    "User_Mail": "jordan@gmail.com",
-                    "User_Avatar": "https://randomuser.me/api/portraits/men/1.jpg"
-                }
+                # if passward is correct
+                if (True):
+                    # return User information
+                    return_data = {
+                        "User_ID": "123",
+                        "User_Name": "jordan",
+                        "User_Mail": "jordan@gmail.com",
+                        "User_Avatar": "https://randomuser.me/api/portraits/men/1.jpg"
+                    }
 
-                response_object = {
-                    'status': 'success',
-                    'method': 'POST',
-                    'route': '/user/sign-in'
-                }
-                response_object["return_data"] = return_data
-                return jsonify(response_object)
-        else:
-            return Response(
-                "登入失敗",
-                status = 400,
-            )
+                    response_object = {
+                        'status': 'success',
+                        'method': 'POST',
+                        'route': '/user?type=sign-in'
+                    }
+                    response_object["return_data"] = return_data
+                    return jsonify(response_object)
+            else:
+                return Response(
+                    "登入失敗",
+                    status = 400,
+                )
+        
+        # 描述: 註冊功能，註冊完只需要回傳成功訊息
+        elif (type == "sign-up"):
+            # post_data format
+            # {
+            #     'User_ID': "",
+            #     'User_Name': "",
+            #     'User_Mail': "",
+            #     'User_Avatar': "",
+            #     'User_Password': ""
+            # }
+            post_data = request.get_json()
 
-# 描述: 註冊功能，註冊完只需要回傳成功訊息
-@app.route('/user/sign-up', methods=['POST'])
-def signUp():
-    if request.method == 'POST':
-        # post_data format
-        # {
-        #     'User_ID': "",
-        #     'User_Name': "",
-        #     'User_Mail': "",
-        #     'User_Avatar': "",
-        #     'User_Password': ""
-        # }
-        post_data = request.get_json()
+            # if User_ID Not in DB
+            if(True):
+                # if User_Mail Not in DB, save post_data as new User in DB, and return to frontend
+                if(True):                
+                    response_object = {
+                        'status': 'success',
+                        'method': 'POST',
+                        'route': '/user?type=sign-up'
+                    }
+                    return jsonify(response_object)
+            else:
+                return Response(
+                    "註冊失敗",
+                    status = 400,
+                )
 
-        # if User_ID Not in DB
-        if(True):
-            # if User_Mail Not in DB, save post_data as new User in DB, and return to frontend
-            if(True):                
-                response_object = {
-                    'status': 'success',
-                    'method': 'POST',
-                    'route': '/user/sign-up'
-                }
-                return jsonify(response_object)
-        else:
-            return Response(
-                "註冊失敗",
-                status = 400,
-            )
 # 網址範例:
 # http://127.0.0.1:5001/project?User_ID=xxx
-# 根據 User_ID 取得其所有相關的 project 資料
-@app.route('/project/', methods=['GET'])
+# 根據 User_ID 取得與其相關的 project 資料
+@app.route('/project', methods=['GET'])
 def get_project():
     # 表示前端送過來的 Query
     User_ID = request.args.get('User_ID')
+    type = request.args.get('type')
+
     # db return example
     return_data = [
         {
             "Project_ID": "abc",
             "Project_Name": "project 1",
             "Project_Color": "pink",
-        },
-        {
-            "Project_ID": "def",
-            "Project_Name": "project 2",
-            "Project_Color": "blue",
         },
     ]
 
@@ -236,12 +234,53 @@ def get_project():
     return jsonify(response_object)
 
 
-# GET 方法 -> 一次取得所有需要的資料 
-@app.route('/tasklist', methods=['GET'])
+# Get all Task_List by Project_ID
+@app.route('/tasklist/all/', methods=['GET'])
 def get_task_list():
-    global user_example
-    # data = user_example["Task_List"]
-    
+    Project_ID = request.args.get('Project_ID')
+
+    # db return example
+    return_data = [
+        {
+            "Task_List_ID": '77889',
+            "Task_List_Name": 'List1',
+            "Task_List_Status": True,
+            "Task_Card": [
+                {
+                    "Task_Card_ID": '54321',
+                    "Task_Card_Name": 'Card1',
+                    "Task_Card_Text": 'Card1 text',
+                    "Task_Card_StartTime": '1998',
+                    "Task_Card_EndTime": '2021',
+                    "Task_Card_Status": True,
+                    "Todo": [
+                        {
+                            "Todo_ID": '798234',
+                            "Todo_Text": 'todo text',
+                            "Todo_Status": True
+                        }
+                    ],
+                    "Comment": [
+                        {
+                            "Commenter_ID": '5648',
+                            "Commenter_Name": 'jenny',
+                            "Comment_Text": 'Comment_Text'
+                        }
+                    ],
+                    "Task_Card_Collaborators": [
+                        {
+                            "User_ID": '789',
+                            "User_Name": 'jenny',
+                            "User_Mail": 'jenny@gmail.com',
+                            "User_Avatar": 'https://randomuser.me/api/portraits/women/82.jpg',
+                        },
+                    ],
+                }
+            ]
+        },
+    ]
+
+
     response_object = {'status': 'success'}
     # response_object["Task_List"] = data
 

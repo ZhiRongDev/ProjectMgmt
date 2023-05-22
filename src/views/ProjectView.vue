@@ -2,7 +2,7 @@
     <AppWrapper>
         <!-- https://vuetifyjs.com/en/components/buttons/#discord-event -->
         <div class="pa-5 task-container overflow-x-auto">
-            <h2 class="mb-2">{{ 專案  }}</h2>
+            <h2 class="mb-2">{{ 專案 }}</h2>
             <template v-for="list in Task_List" :key="list.Task_List_ID">
                 <v-card class="mr-5 task-card" color="#36393f" theme="dark" variant="flat">
                     <v-sheet color="#202225">
@@ -406,7 +406,7 @@ export default {
         },
         getTaskList() {
             let self = this;
-            axios.get(`${import.meta.env.VITE_FLASK_URL}/tasklist`)
+            axios.get(`${import.meta.env.VITE_FLASK_URL}/tasklist/all`)
                 .then(function (response) {
                     self.Task_List = response.data.Task_List
                     console.log(self.Task_List)
@@ -414,8 +414,6 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 })
-                .finally(function () {
-                });
         },
         edit_TaskList(list = {}, target = "") {
             this.cache.edit_target = target;
@@ -437,6 +435,7 @@ export default {
                 this.cache.Task_Card_item[`${target}`] = task[`${target}`];
             }
         },
+
         doneEdit() {
             console.log("ok")
         },

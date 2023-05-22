@@ -185,13 +185,11 @@ export default {
 				.catch(function (error) {
 					console.log(error);
 				})
-				.finally(function () {
-				});
 		},
 
 		goToProject(target) {
 			// console.log(target);
-			this.$router.push({ path: '/project', query: { projectID: target.Project_ID } })
+			this.$router.push({ path: '/project', query: { Project_ID: target.Project_ID } })
 		}
 
 	},
