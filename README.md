@@ -9,7 +9,7 @@ See [documents](https://github.com/ZhiRongDev/ProjectMgmt/tree/main/documents)
 $ cd server
 
 $ python3.11 -m venv env
-$ source env/bin/activate
+$ .\env\Scripts\activate
 (env)$
 ```
 

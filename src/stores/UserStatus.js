@@ -18,11 +18,11 @@ export default defineStore('UserStatus', {
     // 等於 methods
     actions: {
         logout() {
-            localStorage.removeItem('UserInfo')
+            localStorage.removeItem('User')
             this.router.replace('/')
         },
         load_UserInfo() {
-            const UserInfo = JSON.parse(localStorage.getItem('UserInfo'))
+            const UserInfo = JSON.parse(localStorage.getItem('User'))
             this.User.User_ID = UserInfo.User_ID;
             this.User.User_Name = UserInfo.User_Name;
             this.User.User_Mail = UserInfo.User_Mail;
@@ -30,8 +30,8 @@ export default defineStore('UserStatus', {
         },
         checkAuth() {
             if (
-                !localStorage.getItem('UserInfo') ||
-                localStorage.getItem('UserInfo').User_ID === null
+                !localStorage.getItem('User') ||
+                localStorage.getItem('User').User_ID === null
             ) {
                 this.logout()
             } else {

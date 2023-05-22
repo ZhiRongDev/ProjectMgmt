@@ -177,16 +177,16 @@ export default {
 		...mapActions(UserStatus, ['checkAuth']),
 		getProject() {
 			let self = this;
-			axios.get(`${import.meta.env.VITE_FLASK_URL}/project`)
-			.then(function (response) {
-				console.log(response);
-				self.Project = response.data.Project;
-			})
-			.catch(function (error) {
-				console.log(error);
-			})
-			.finally(function () {
-			});
+			axios.get(`${import.meta.env.VITE_FLASK_URL}/project?User_ID=${this.User.User_ID}`)
+				.then(function (response) {
+					console.log(response);
+					self.Project = response.data.return_data;
+				})
+				.catch(function (error) {
+					console.log(error);
+				})
+				.finally(function () {
+				});
 		},
 
 		goToProject(target) {
@@ -196,7 +196,10 @@ export default {
 
 	},
 	mounted() {
-		this.checkAuth();
+		(async () => {
+			await this.checkAuth();
+		})();
+		
 		this.getProject();
 	}
 }

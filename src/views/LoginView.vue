@@ -12,8 +12,8 @@
 							label="Password" placeholder="Enter your password"></v-text-field>
 
 						<br>
-						<v-btn @click="signIn()" :disabled="!form" :loading="loading" block color="success" size="large" type="submit"
-							variant="elevated">
+						<v-btn @click="signIn()" :disabled="!form" :loading="loading" block color="success" size="large"
+							type="submit" variant="elevated">
 							<strong>登入</strong>
 						</v-btn>
 						<br>
@@ -91,7 +91,7 @@ export default {
 		User_Password: null,
 		loading: false,
 		dialog: false,
-		
+
 		cache: {
 			User_ID: "",
 			User_Name: "",
@@ -135,8 +135,8 @@ export default {
 			axios.post(url, data)
 				.then((res) => {
 					console.log(res);
-					let UserInfo = res.data.UserInfo;
-					localStorage.setItem('UserInfo', JSON.stringify(UserInfo))
+					let User = res.data.return_data;
+					localStorage.setItem('User', JSON.stringify(User))
 					this.$router.push({ path: '/home' })
 				})
 				.catch((err) => {
@@ -156,12 +156,13 @@ export default {
 				.then((res) => {
 					// console.log(res);
 					self.clearCache();
-					this.snackbar_msg = err.response.data;
+					this.snackbar_msg = res.data.status;
 					this.dialog = false;
 					this.snackbar = true;
 				})
 				.catch((err) => {
 					this.snackbar_msg = err.response.data;
+					this.dialog = false;
 					this.snackbar = true;
 				})
 		}
