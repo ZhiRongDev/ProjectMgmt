@@ -177,7 +177,7 @@ export default {
 		...mapActions(UserStatus, ['checkAuth']),
 		getProject() {
 			let self = this;
-			axios.get(`${import.meta.env.VITE_FLASK_URL}/project?User_ID=${this.User.User_ID}`)
+			axios.get(`${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&type=all`)
 				.then(function (response) {
 					console.log(response);
 					self.Project = response.data.return_data;

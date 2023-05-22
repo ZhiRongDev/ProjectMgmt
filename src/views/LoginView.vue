@@ -127,7 +127,7 @@ export default {
 
 		signIn() {
 			let self = this;
-			let url = `${import.meta.env.VITE_FLASK_URL}/user?type=sign-in`;
+			let url = `${import.meta.env.VITE_FLASK_URL}/User?type=sign-in`;
 			let data = {
 				User_Mail: this.User_Mail,
 				User_Password: this.User_Password,
@@ -148,7 +148,7 @@ export default {
 
 		signUp() {
 			let self = this;
-			let url = `${import.meta.env.VITE_FLASK_URL}/user?type=sign-up`;
+			let url = `${import.meta.env.VITE_FLASK_URL}/User?type=sign-up`;
 			this.cache.User_ID = Date.now();
 			let data = self.cache;
 

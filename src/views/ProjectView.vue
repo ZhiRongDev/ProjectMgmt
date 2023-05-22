@@ -406,9 +406,9 @@ export default {
         },
         getTaskList() {
             let self = this;
-            axios.get(`${import.meta.env.VITE_FLASK_URL}/tasklist/all`)
+            axios.get(`${import.meta.env.VITE_FLASK_URL}/Task_List?type=all&Project_ID=${this.$route.query.Project_ID}`)
                 .then(function (response) {
-                    self.Task_List = response.data.Task_List
+                    self.Task_List = response.data.return_data
                     console.log(self.Task_List)
                 })
                 .catch(function (error) {
@@ -442,7 +442,7 @@ export default {
     },
     mounted() {
         this.getTaskList();
-        console.log(this.$route.query)
+        // console.log(this.$route.query.Project_ID)
     }
 }
 </script>
