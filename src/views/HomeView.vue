@@ -189,16 +189,15 @@ export default {
 
 		goToProject(target) {
 			// console.log(target);
-			this.$router.push({ path: '/project', query: { Project_ID: target.Project_ID } })
+			this.$router.push({ path: '/project', query: { User_ID: this.User.User_ID, Project_ID: target.Project_ID } })
 		}
 
 	},
 	mounted() {
 		(async () => {
 			await this.checkAuth();
+			await this.getProject();
 		})();
-		
-		this.getProject();
 	}
 }
 </script>

@@ -140,7 +140,7 @@ export default {
 					this.$router.push({ path: '/home' })
 				})
 				.catch((err) => {
-					// console.log(err);
+					console.log(err);
 					this.snackbar_msg = err.response.data;
 					this.snackbar = true;
 				})
@@ -156,7 +156,7 @@ export default {
 				.then((res) => {
 					// console.log(res);
 					self.clearCache();
-					this.snackbar_msg = res.data.status;
+					this.snackbar_msg = res.data.response;
 					this.dialog = false;
 					this.snackbar = true;
 				})

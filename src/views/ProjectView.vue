@@ -2,7 +2,7 @@
     <AppWrapper>
         <!-- https://vuetifyjs.com/en/components/buttons/#discord-event -->
         <div class="pa-5 task-container overflow-x-auto">
-            <h2 class="mb-2">{{ 專案 }}</h2>
+            <h2 class="mb-2">{{ this.Project.Project_Name }}</h2>
             <template v-for="list in Task_List" :key="list.Task_List_ID">
                 <v-card class="mr-5 task-card" color="#36393f" theme="dark" variant="flat">
                     <v-sheet color="#202225">
@@ -29,12 +29,12 @@
                         </v-card-item>
                     </v-sheet>
 
-                    <template v-for="task in list.Task_Card" :key="n">
+                    <template v-for="task in list.Task_Card" :key="task.Task_Card_ID">
                         <v-card class="ma-4" color="#2f3136" rounded="lg" variant="flat">
                             <v-card-item>
                                 <v-card-title class="text-body-2 d-flex align-center mb-2">
                                     <div>
-                                        <v-chip v-bind="props" class="mr-3 bg-green">已完成</v-chip>
+                                        <v-chip class="mr-3 bg-green">已完成</v-chip>
                                     </div>
 
                                     <v-spacer></v-spacer>
@@ -338,6 +338,8 @@ export default {
             model: null,
             newList_dialog: false,
             checkCard_dialog: false,
+            
+            Project: {},
             Task_List: [],
             // caches are used for update, they should always be empty objects when not updating.
             cache: {
@@ -381,6 +383,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions(UserStatus, ['checkAuth']),
         addTodo() {
             this.tasks.push({
                 done: false,
@@ -393,6 +396,7 @@ export default {
         isObjEmpty(obj) {
             return Object.keys(obj).length === 0;
         },
+        
         clearCache() {
             let cache = {
                 edit_target: "",
@@ -404,9 +408,24 @@ export default {
             }
             this.cache = JSON.parse(JSON.stringify(cache)); // DeepCopy
         },
+
+        getProject() {
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&type=specified`;
+            axios.get(url)
+                .then(function (response) {
+                    self.Project = response.data.return_data
+                    console.log(self.Project)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        },
+
         getTaskList() {
             let self = this;
-            axios.get(`${import.meta.env.VITE_FLASK_URL}/Task_List?type=all&Project_ID=${this.$route.query.Project_ID}`)
+            let url = `${import.meta.env.VITE_FLASK_URL}/Task_List?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&type=all`;
+            axios.get(url)
                 .then(function (response) {
                     self.Task_List = response.data.return_data
                     console.log(self.Task_List)
@@ -415,6 +434,7 @@ export default {
                     console.log(error);
                 })
         },
+        
         edit_TaskList(list = {}, target = "") {
             this.cache.edit_target = target;
             // if ckick the </v-btn icon="$edit"> once again
@@ -441,7 +461,12 @@ export default {
         },
     },
     mounted() {
-        this.getTaskList();
+        (async () => {
+			await this.checkAuth();
+            await this.getTaskList();
+            await this.getProject();
+		})();
+        
         // console.log(this.$route.query.Project_ID)
     }
 }

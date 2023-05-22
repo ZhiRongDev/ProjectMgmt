@@ -1,84 +1,6 @@
 from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 
-## 以下是假資料(模擬某個 User 的相關資料)
-user_example = {
-    "User_ID": "123",
-    "User_Name": "jordan",
-    "User_Mail": "jordan@gmail.com",
-    "User_Avatar": "https://randomuser.me/api/portraits/men/1.jpg",
-    "User_Password": "123456",
-    
-    "Project": [
-        {
-            "Project_ID": "abc",
-            "Project_Name": "project 1",
-            "Project_Color": "pink",
-            "Project_Collaborators": [
-                {
-                    "User_ID": "123",
-                    "User_Name": "jordan",
-                    "User_Mail": "jordan@gmail.com",
-                    "User_Avatar": "https://randomuser.me/api/portraits/men/1.jpg",
-                },
-                {
-                    "User_ID": '456',
-                    "User_Name": 'selina',
-                    "User_Mail": 'selina@gmail.com',
-                    "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
-                },
-                {
-                    "User_ID": '789',
-                    "User_Name": 'jenny',
-                    "User_Mail": 'jenny@gmail.com',
-                    "User_Avatar": 'https://randomuser.me/api/portraits/women/82.jpg',
-                }
-            ],
-            "Task_List": [
-                {
-                    "Task_List_ID": '77889',
-                    "Task_List_Name": 'List1',
-                    "Task_List_Status": True,
-                    "Task_Card": [
-                        {
-                            "Task_Card_ID": '54321',
-                            "Task_Card_Name": 'Card1',
-                            "Task_Card_Text": 'Card1 text',
-                            "Task_Card_StartTime": '1998',
-                            "Task_Card_EndTime": '2021',
-                            "Task_Card_Status": True,
-                            "Todo": [
-                                {
-                                    "Todo_ID": '798234',
-                                    "Todo_Text": 'todo text',
-                                    "Todo_Status": True
-                                }
-                            ],
-                            "Comment": [
-                                {
-                                    "Commenter_ID": '5648',
-                                    "Commenter_Name": 'jenny',
-                                    "Comment_Text": 'Comment_Text'
-                                }
-                            ],
-                            "Task_Card_Collaborators": [
-                                {
-                                    "User_ID": '789',
-                                    "User_Name": 'jenny',
-                                    "User_Mail": 'jenny@gmail.com',
-                                    "User_Avatar": 'https://randomuser.me/api/portraits/women/82.jpg',
-                                },
-                            ],
-                        }
-                    ]
-                },
-            ],
-        },
-    ],
-}
-
-################################################################
-
 # instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -116,9 +38,10 @@ def example():
                 "User_Avatar": "https://randomuser.me/api/portraits/men/1.jpg"
             }
 
-            # 請務必附上以下資訊方便 Degug
+            # 請務必附上以下資訊，用於顯示在前端 & Debug
             response_object = {
                 'status': 'success',
+                'response': '登入成功',
                 'method': 'POST',
                 'route': '/example'
             }
@@ -128,18 +51,19 @@ def example():
         # 失敗路徑，麻煩根據失敗原因撰寫 Response，會直接顯示在前端
         elif:
             return Response(
-                "失敗，帳號錯誤",
+                response = "失敗，帳號錯誤",
                 status = 400,
             )
         else:
             return Response(
-                "失敗，密碼錯誤",
+                response = "失敗，密碼錯誤",
                 status = 400,
             )
 """
 
 # query 範例:
-# http://127.0.0.1:5001/user?type=sign-in
+# http://127.0.0.1:5001/User?type=sign-in
+# http://127.0.0.1:5001/User?type=sign-up
 @app.route('/User', methods=['POST'])
 def User_operation():
     if request.method == 'POST':
@@ -171,6 +95,7 @@ def User_operation():
 
                     response_object = {
                         'status': 'success',
+                        'response': '登入成功',
                         'method': 'POST',
                         'route': '/user?type=sign-in'
                     }
@@ -179,7 +104,7 @@ def User_operation():
             # 失敗路徑
             else:
                 return Response(
-                    "登入失敗",
+                    response = "登入失敗",
                     status = 400,
                 )
         
@@ -202,6 +127,7 @@ def User_operation():
                 if(True):                
                     response_object = {
                         'status': 'success',
+                        'response': '註冊成功',
                         'method': 'POST',
                         'route': '/user?type=sign-up'
                     }
@@ -209,12 +135,13 @@ def User_operation():
             # 失敗路徑
             else:
                 return Response(
-                    "註冊失敗",
+                    response = "註冊失敗",
                     status = 400,
                 )
 
 # query 範例:
-# http://127.0.0.1:5001/project?User_ID=xxx&type=all
+# http://127.0.0.1:5001/Project?User_ID=xxx&type=all
+# http://127.0.0.1:5001/Project?User_ID=xxx&Project_ID=xxx&type=specified
 @app.route('/Project', methods=['GET'])
 def Project_operstion():
     if request.method == 'GET':
@@ -224,100 +151,128 @@ def Project_operstion():
 
         # 取得所有跟 User_ID 相關的 Project 資料
         if(type == 'all'):
-            # db return example
-            return_data = [
-                {
-                    "Project_ID": "abc",
-                    "Project_Name": "project 1",
-                    "Project_Color": "pink",
-                },
-                {
-                    "Project_ID": "def",
-                    "Project_Name": "project 2",
-                    "Project_Color": "blue",
-                },
-            ]
+            if(True):
+                # db return example
+                return_data = [
+                    {
+                        "Project_ID": "abc",
+                        "Project_Name": "project 1",
+                        "Project_Color": "pink",
+                    },
+                    {
+                        "Project_ID": "def",
+                        "Project_Name": "project 2",
+                        "Project_Color": "blue",
+                    },
+                ]
 
-            response_object = {
-                'status': 'success',
-                'method': 'GET',
-                'route': '/Project?type=' + type + '&User_ID=' + User_ID
-            }
-            response_object["return_data"] = return_data
-            return jsonify(response_object)
-        # 失敗路徑
-        else:
-            return Response(
-                "xx失敗",
-                status = 400,
+                response_object = {
+                    'status': 'success',
+                    'response': '取得 Project 成功',
+                    'method': 'GET',
+                    'route': ''
+                }
+                response_object["return_data"] = return_data
+                return jsonify(response_object)
+            # 失敗路徑
+            else:
+                return Response(
+                    response = "取得 Project 失敗",
+                    status = 400,
             )
+        
+        # 取得特定 Project_ID 的相關資料
+        elif(type == 'specified'):
+            if(True):
+                # db return example
+                return_data = {
+                    "Project_Name": 'project 1',
+                    "Project_Color": 'pink'
+                }
+
+                response_object = {
+                    'status': 'success',
+                    'response': '取得 Project 成功',
+                    'method': 'GET',
+                    'route': ''
+                }
+                response_object["return_data"] = return_data
+                return jsonify(response_object)
+            # 失敗路徑
+            else:
+                return Response(
+                    response = "失敗",
+                    status = 400,
+                )
 
 # query 範例:
-# http://127.0.0.1:5001/Task_List&type=all&Project_ID=xxx
+# http://127.0.0.1:5001/Task_List?User_ID=xxx&Project_ID=xxx&type=all
 @app.route('/Task_List', methods=['GET'])
 def Task_List_operation():
     if request.method == 'GET':
         # 表示前端送過來的 Query
+        User_ID = request.args.get('User_ID')
         Project_ID = request.args.get('Project_ID')
         type = request.args.get('type')
 
-        # 取得所有跟 User_ID 相關的 Project 資料
+        # 取得所有跟 Project_ID 相關的 Project 資料
         if(type == 'all'):
-            # db return example
-            return_data = [
-                {
-                    "Task_List_ID": '77889',
-                    "Task_List_Name": 'List1',
-                    "Task_List_Status": True,
-                    "Task_Card": [
-                        {
-                            "Task_Card_ID": '54321',
-                            "Task_Card_Name": 'Card1',
-                            "Task_Card_Text": 'Card1 text',
-                            "Task_Card_StartTime": '1998',
-                            "Task_Card_EndTime": '2021',
-                            "Task_Card_Status": True,
-                            "Todo": [
-                                {
-                                    "Todo_ID": '798234',
-                                    "Todo_Text": 'todo text',
-                                    "Todo_Status": True
-                                }
-                            ],
-                            "Comment": [
-                                {
-                                    "Commenter_ID": '5648',
-                                    "Commenter_Name": 'jenny',
-                                    "Comment_Text": 'Comment_Text'
-                                }
-                            ],
-                            "Task_Card_Collaborators": [
-                                {
-                                    "User_ID": '789',
-                                    "User_Name": 'jenny',
-                                    "User_Mail": 'jenny@gmail.com',
-                                    "User_Avatar": 'https://randomuser.me/api/portraits/women/82.jpg',
-                                },
-                            ],
-                        }
-                    ]
-                },
-            ]
+            if(True):
+                # db return example
+                return_data = [
+                    {
+                        "Task_List_ID": '77889',
+                        "Task_List_Name": 'List1',
+                        "Task_List_Status": True,
+                        "Task_Card": [
+                            {
+                                "Task_Card_ID": '54321',
+                                "Task_Card_Name": 'Card1',
+                                "Task_Card_Text": 'Card1 text',
+                                "Task_Card_StartTime": '1998',
+                                "Task_Card_EndTime": '2021',
+                                "Task_Card_Status": True,
+                                "Todo": [
+                                    {
+                                        "Todo_ID": '798234',
+                                        "Todo_Text": 'todo text',
+                                        "Todo_Status": True
+                                    }
+                                ],
+                                "Comment": [
+                                    {
+                                        "Commenter_ID": '5648',
+                                        "Commenter_Name": 'jenny',
+                                        "Comment_Text": 'Comment_Text'
+                                    }
+                                ],
+                                "Task_Card_Collaborators": [
+                                    {
+                                        "User_ID": '789',
+                                        "User_Name": 'jenny',
+                                        "User_Mail": 'jenny@gmail.com',
+                                        "User_Avatar": 'https://randomuser.me/api/portraits/women/82.jpg',
+                                    },
+                                ],
+                            }
+                        ]
+                    },
+                ]
 
-            response_object = {
-                'status': 'success',
-                'method': 'GET',
-                'route': '/Project?type=' + type + '&Project_ID=' + Project_ID
-            }
-            response_object["return_data"] = return_data
-            return jsonify(response_object)
-        # 失敗路徑
-        else:
-            return Response(
-                "xx失敗",
-                status = 400,
-            )
-
+                response_object = {
+                    'status': 'success',
+                    'response': '取得 Task_List 成功',
+                    'method': 'GET',
+                    'route': '/Project?type=' + type + '&Project_ID=' + Project_ID
+                }
+                response_object["return_data"] = return_data
+                return jsonify(response_object)
+            # 失敗路徑
+            else:
+                return Response(
+                    response = "取得 Task_List 失敗",
+                    status = 400,
+                )
 
 if __name__ == '__main__':
     app.run()
