@@ -413,12 +413,12 @@ export default {
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&type=specified`;
             axios.get(url)
-                .then(function (response) {
-                    self.Project = response.data.return_data
+                .then(function (res) {
+                    self.Project = res.data.return_data
                     console.log(self.Project)
                 })
-                .catch(function (error) {
-                    console.log(error);
+                .catch(function (err) {
+                    console.log(err);
                 })
         },
 
@@ -426,12 +426,12 @@ export default {
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Task_List?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&type=all`;
             axios.get(url)
-                .then(function (response) {
-                    self.Task_List = response.data.return_data
+                .then(function (res) {
+                    self.Task_List = res.data.return_data
                     console.log(self.Task_List)
                 })
-                .catch(function (error) {
-                    console.log(error);
+                .catch(function (err) {
+                    console.log(err);
                 })
         },
         

@@ -137,12 +137,12 @@ export default {
 					console.log(res);
 					let User = res.data.return_data;
 					localStorage.setItem('User', JSON.stringify(User))
-					this.$router.push({ path: '/home' })
+					self.$router.push({ path: '/home' })
 				})
 				.catch((err) => {
 					console.log(err);
-					this.snackbar_msg = err.response.data;
-					this.snackbar = true;
+					self.snackbar_msg = err.response.data;
+					self.snackbar = true;
 				})
 		},
 
@@ -156,14 +156,14 @@ export default {
 				.then((res) => {
 					// console.log(res);
 					self.clearCache();
-					this.snackbar_msg = res.data.response;
-					this.dialog = false;
-					this.snackbar = true;
+					self.snackbar_msg = res.data.response;
+					self.dialog = false;
+					self.snackbar = true;
 				})
 				.catch((err) => {
-					this.snackbar_msg = err.response.data;
-					this.dialog = false;
-					this.snackbar = true;
+					self.snackbar_msg = err.response.data;
+					self.dialog = false;
+					self.snackbar = true;
 				})
 		}
 	},

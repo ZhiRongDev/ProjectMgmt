@@ -25,13 +25,14 @@
 										<v-row>
 											<v-col>
 												<v-btn variant="flat" color="secondary"
-													@click="dialog_update = true">更改</v-btn>
+													@click="open_dialog_setting(type='update', target = item)">更改</v-btn>
 											</v-col>
 											<v-col>
 												<v-btn variant="flat" color="primary" @click="goToProject(item)">進入</v-btn>
 											</v-col>
 											<v-col>
-												<v-btn variant="flat" color="red" @click="dialog_delete = true">刪除</v-btn>
+												<v-btn variant="flat" color="red"
+													@click="cache.Project_ID = item.Project_ID; dialog_delete = true;">刪除</v-btn>
 											</v-col>
 										</v-row>
 									</v-overlay>
@@ -42,7 +43,7 @@
 
 					<!-- 新增專案 -->
 					<v-col cols="12" sm="6" md="4">
-						<v-btn block class="mx-auto" height="200" @click="dialog_create = true">
+						<v-btn block class="mx-auto" height="200" @click="open_dialog_setting()">
 							<v-icon size="x-large" style="font-size: 40px;">mdi-plus</v-icon>
 							<v-tooltip activator="parent" location="top"> 新增專案 </v-tooltip>
 						</v-btn>
@@ -51,81 +52,32 @@
 			</v-container>
 		</AppWrapper>
 
-		<!-- 新增專案 -->
-		<v-dialog v-model="dialog_create" class="dialog_sizing" persistent>
+		<!-- 新增、更新專案 -->
+		<v-dialog v-model="dialog_setting" class="dialog_sizing" persistent>
 			<v-card>
 				<v-card-text>
 					<v-container>
 						<h3 class="mb-3">
-							新增專案
+							專案設定
 						</h3>
 						<v-row>
 							<v-col cols="12">
-								<v-text-field label="專案名稱*" type="password" required></v-text-field>
+								<v-text-field v-model="cache.Project_Name" label="專案名稱*" type="text" required></v-text-field>
 							</v-col>
 							<v-col cols="12">
 								<p class="mb-1"><strong>專案顏色</strong></p>
-								<v-color-picker v-model="color_picker" elevation="0"></v-color-picker>
-								{{ color_picker }}
+								<v-color-picker v-model="cache.Project_Color" elevation="0"></v-color-picker>
+								{{ cache.Project_Color }}
 							</v-col>
 						</v-row>
 					</v-container>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn color="red" variant="text" @click="dialog_create = false">
+					<v-btn color="red" variant="text" @click="clearCache(); dialog_setting = false">
 						Disagree
 					</v-btn>
-					<v-btn color="green-darken-1" variant="text" @click="dialog_create = false">
-						Agree
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<!-- 更新專案 -->
-		<v-dialog v-model="dialog_update" class="dialog_sizing" persistent>
-			<v-card>
-				<v-card-text>
-					<v-container>
-						<h3 class="mb-3">
-							更新專案
-						</h3>
-						<v-row>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Legal first name*" required></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Legal middle name"
-									hint="example of helper text only on focus"></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Legal last name*" hint="example of persistent helper text"
-									persistent-hint required></v-text-field>
-							</v-col>
-							<v-col cols="12">
-								<v-text-field label="Email*" required></v-text-field>
-							</v-col>
-							<v-col cols="12">
-								<v-text-field label="Password*" type="password" required></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6">
-								<v-select :items="['0-17', '18-29', '30-54', '54+']" label="Age*" required></v-select>
-							</v-col>
-							<v-col cols="12" sm="6">
-								<v-autocomplete
-									:items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-									label="Interests" multiple></v-autocomplete>
-							</v-col>
-						</v-row>
-					</v-container>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer></v-spacer>
-					<v-btn color="red" variant="text" @click="dialog_update = false">
-						Disagree
-					</v-btn>
-					<v-btn color="green-darken-1" variant="text" @click="dialog_update = false">
+					<v-btn color="green-darken-1" variant="text" @click="set_Project()">
 						Agree
 					</v-btn>
 				</v-card-actions>
@@ -140,15 +92,25 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn color="red" variant="text" @click="dialog_delete = false">
+					<v-btn color="red" variant="text" @click="clearCache(); dialog_delete = false">
 						Disagree
 					</v-btn>
-					<v-btn color="green-darken-1" variant="text" @click="dialog_delete = false">
+					<v-btn color="green-darken-1" variant="text" @click="delete_Project()">
 						Agree
 					</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+
+		<!-- 提示訊息 -->
+		<v-snackbar v-model="snackbar" timeout="2000">
+			{{ snackbar_msg }}
+			<template v-slot:actions>
+				<v-btn color="blue" variant="text" @click="snackbar = false">
+					Close
+				</v-btn>
+			</template>
+		</v-snackbar>
 	</main>
 </template>
 
@@ -157,15 +119,24 @@ import axios from 'axios';
 import { mapState, mapActions } from 'pinia'
 import UserStatus from '@/stores/UserStatus'
 import AppWrapper from '../components/AppWrapper.vue';
+import { ThirdPartyDraggable } from '@fullcalendar/interaction';
 
 export default {
 	data: () => ({
-		// drawer: null,
-		color_picker: null,
-		dialog_create: false,
+		dialog_setting: false,
 		dialog_delete: false,
-		dialog_update: false,
+		dialog_setting_type: "",
+		
+		snackbar_msg: "",
+		snackbar: false,
+		
 		Project: [],
+		
+		cache: {
+			Project_ID: "",
+			Project_Name: "",
+			Project_Color: "",
+		}
 	}),
 	components: {
 		AppWrapper
@@ -175,28 +146,119 @@ export default {
 	},
 	methods: {
 		...mapActions(UserStatus, ['checkAuth']),
-		getProject() {
+		getProject_List() {
 			let self = this;
-			axios.get(`${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&type=all`)
-				.then(function (response) {
-					console.log(response);
-					self.Project = response.data.return_data;
+			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&type=all`;
+			axios.get(url)
+				.then(function (res) {
+					console.log(res);
+					self.Project = res.data.return_data;
 				})
-				.catch(function (error) {
-					console.log(error);
+				.catch(function (err) {
+					console.log(err);
 				})
 		},
 
 		goToProject(target) {
-			// console.log(target);
 			this.$router.push({ path: '/project', query: { User_ID: this.User.User_ID, Project_ID: target.Project_ID } })
+		},
+
+		clearCache() {
+			let cache = {
+				Project_ID: "",
+				Project_Name: "",
+				Project_Color: "",
+			}
+			this.cache = JSON.parse(JSON.stringify(cache)); // DeepCopy
+		},
+
+		open_dialog_setting(type="new", target = {}) {
+			this.dialog_setting_type = type;
+			this.cache.Project_ID = target.Project_ID;
+			this.cache.Project_Name = target.Project_Name;
+			this.cache.Project_Color = target.Project_Color;
+			this.dialog_setting = true;
+		},
+
+		new_Project() {
+			let self = this;
+			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}`;
+			self.cache.Project_ID = Date.now();
+			let data = self.cache;
+
+			axios.post(url, data)
+				.then(function (res) {
+					console.log(res);
+					self.snackbar_msg = res.data.response;
+					self.snackbar = true;
+					self.getProject_List();
+				})
+				.catch(function (err) {
+					console.log(err);
+					self.snackbar_msg = err.response.data;
+					self.snackbar = true;
+					console.log(err);
+				})
+			
+			this.dialog_setting = false
+		},
+
+		update_Project() {
+			let self = this;
+			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}`;
+			let data = self.cache;
+			axios.put(url, data)
+				.then(function (res) {
+					console.log(res);
+					self.snackbar_msg = res.data.response;
+					self.snackbar = true;
+					self.getProject_List();
+				})
+				.catch(function (err) {
+					console.log(err);
+					self.snackbar_msg = err.response.data;
+					self.snackbar = true;
+					console.log(err);
+				})
+			
+			this.dialog_setting = false
+		},
+
+		set_Project() {
+			if(this.dialog_setting_type == "new") {
+				this.new_Project();
+			} else if (this.dialog_setting_type == "update") {
+				this.update_Project();
+			}
+		},
+
+		delete_Project() {
+			// console.log(this.cache.Project_ID);
+			let self = this;
+			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&Project_ID=${this.cache.Project_ID}&type=specified`;
+			axios.delete(url)
+				.then(function (res) {
+					console.log(res);
+					self.snackbar_msg = res.data.response;
+					self.snackbar = true;
+					self.getProject_List();
+				})
+				.catch(function (err) {
+					console.log(err);
+					self.snackbar_msg = err.response.data;
+					self.snackbar = true;
+					console.log(err);
+				})
+
+			this.clearCache();
+			this.dialog_delete = false;
 		}
 
 	},
 	mounted() {
 		(async () => {
 			await this.checkAuth();
-			await this.getProject();
+			await this.getProject_List();
 		})();
 	}
 }
