@@ -89,8 +89,8 @@ def Project_operstion():
                                         "Task_Card_ID": '54321',
                                         "Task_Card_Name": 'Card1',
                                         "Task_Card_Text": 'Card1 text',
-                                        "Task_Card_StartTime": '1998',
-                                        "Task_Card_EndTime": '2021',
+                                        "Task_Card_StartTime": '2018-07-12',
+                                        "Task_Card_EndTime": '2018-07-22',
                                         "Task_Card_Status": True,
                                         "Task_WorksOn": [
                                             {
@@ -103,15 +103,37 @@ def Project_operstion():
                                         "Todo": [
                                             {
                                                 "Todo_ID": '798234',
-                                                "Todo_Text": 'todo text',
+                                                "Todo_Text": 'todo text 1',
+                                                "Todo_Status": False
+                                            },
+                                            {
+                                                "Todo_ID": '923483',
+                                                "Todo_Text": 'todo text 2',
                                                 "Todo_Status": True
+                                            },
+                                            {
+                                                "Todo_ID": '989725',
+                                                "Todo_Text": 'todo text 3',
+                                                "Todo_Status": False
                                             }
+
                                         ],
                                         "Comment": [
                                             {
                                                 "Commenter_ID": '456',
                                                 "Commenter_Name": 'jenny',
-                                                "Comment_Text": 'Comment_Text'
+                                                "Comment_Text": '我說了一些事情',
+                                                ## 以下兩個 DB 沒有，但幫我抓
+                                                "Commenter_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                                                "Commenter_Mail": 'jenny@gmail.com'
+                                            },
+                                            {
+                                                "Commenter_ID": '456',
+                                                "Commenter_Name": 'jenny',
+                                                "Comment_Text": '我說了一些事情 888',
+                                                ## 以下兩個 DB 沒有，但幫我抓
+                                                "Commenter_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                                                "Commenter_Mail": 'jenny@gmail.com'
                                             }
                                         ],
                                     }

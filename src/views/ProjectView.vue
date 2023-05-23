@@ -110,7 +110,8 @@
                                         <v-card-title class="d-flex align-center justify-space-between">
                                             <div class="d-flex align-center w-75">
                                                 <div>
-                                                    <v-chip v-if="task.Task_Card_Status" class="mr-3 bg-green" link>進行中</v-chip>
+                                                    <v-chip v-if="task.Task_Card_Status" class="mr-3 bg-green"
+                                                        link>進行中</v-chip>
                                                     <v-chip v-else class="mr-3 bg-grey" link>已完成</v-chip>
                                                 </div>
                                                 <input
@@ -201,11 +202,11 @@
                                                 <h4>待辦清單</h4>
                                                 <v-divider class="mb-3"></v-divider>
                                                 <div>
-                                                    <v-text-field v-model="newTask" label="請輸入待辦事項" variant="solo"
-                                                        @keydown.enter="addTodo">
+                                                    <v-text-field v-model="cache.Todo_item.Todo_Text" label="請輸入待辦事項"
+                                                        variant="solo" @keydown.enter="addTodo">
                                                         <template v-slot:append>
                                                             <v-fade-transition>
-                                                                <v-icon v-if="newTask" @click="addTodo">
+                                                                <v-icon v-if="cache.Todo_item.Todo_Text" @click="addTodo">
                                                                     mdi-plus-circle
                                                                 </v-icon>
                                                             </v-fade-transition>
@@ -214,61 +215,101 @@
 
                                                     <v-row class="my-1" align="center">
                                                         <strong class="mx-4 text-info-darken-2">
-                                                            進行中: {{ remainingTasks }}
+                                                            進行中: {{ remainingTasks(task.Todo) }}
                                                         </strong>
 
                                                         <v-divider vertical></v-divider>
 
                                                         <strong class="mx-4 text-success-darken-2">
-                                                            已完成: {{ completedTasks }}
+                                                            已完成: {{ completedTasks(task.Todo) }}
                                                         </strong>
 
                                                         <v-spacer></v-spacer>
-
-                                                        <v-progress-circular v-model="progress"
-                                                            class="me-2"></v-progress-circular>
                                                     </v-row>
 
                                                     <v-divider class="mb-4"></v-divider>
 
-                                                    <v-card v-if="tasks.length > 0">
+                                                    <v-card v-if="task.Todo.length > 0">
                                                         <v-slide-y-transition class="py-0" group tag="v-list">
-                                                            <template v-for="(task, i) in tasks" :key="`${i}-${task.text}`">
+                                                            <template v-for="(todo, i) in task.Todo"
+                                                                :key="`${i}-${todo.Todo_Text}`">
                                                                 <v-divider v-if="i !== 0" :key="`${i}-divider`"></v-divider>
 
                                                                 <v-list-item>
-                                                                    <v-list-item-action>
-                                                                        <v-checkbox v-model="task.done"
-                                                                            :color="task.done && 'grey' || 'primary'">
-                                                                            <template v-slot:label>
-                                                                                <div :class="task.done && 'text-grey' || 'text-primary'"
-                                                                                    class="ms-4" v-text="task.text"></div>
-                                                                            </template>
-                                                                        </v-checkbox>
+                                                                    <v-list-item-action
+                                                                        class="d-flex align-center justify-space-between py-2">
+                                                                        <div class="d-flex align-center">
+                                                                            <v-chip v-if="todo.Todo_Status"
+                                                                                @click="doneEdit()" class="mr-3 bg-green" link>進行中</v-chip>
+                                                                            <v-chip v-else @click="doneEdit()" class="mr-3 bg-grey"
+                                                                                link>已完成</v-chip>
+                                                                            <p
+                                                                                :class="todo.Todo_Status && 'text-success' || 'text-grey'">
+                                                                                {{ todo.Todo_Text }}</p>
+                                                                        </div>
+
+                                                                        <v-btn density="compact" icon="mdi-close"
+                                                                            class="mr-3"></v-btn>
                                                                     </v-list-item-action>
-
-                                                                    <v-spacer></v-spacer>
-
-                                                                    <v-scroll-x-transition>
-                                                                        <v-icon v-if="task.done" color="success">
-                                                                            mdi-check
-                                                                        </v-icon>
-                                                                    </v-scroll-x-transition>
                                                                 </v-list-item>
                                                             </template>
                                                         </v-slide-y-transition>
                                                     </v-card>
 
                                                 </div>
+
                                                 <br>
 
                                                 <h4>留言區</h4>
                                                 <v-divider class="mb-3"></v-divider>
+                                                <v-text-field v-model="cache.Comment_item.Commenter_Name" label="請輸入留言"
+                                                    variant="solo" @keydown.enter="">
+                                                    <template v-slot:append>
+                                                        <v-fade-transition>
+                                                            <v-icon v-if="cache.Comment_item.Commenter_Name" @click="">
+                                                                mdi-plus-circle
+                                                            </v-icon>
+                                                        </v-fade-transition>
+                                                    </template>
+                                                </v-text-field>
+
+                                                <v-row>
+                                                    <v-col v-for="comment in task.Comment" cols="12"
+                                                        class="d-flex align-center justify-space-between">
+                                                        <div class="d-flex align-center">
+                                                            <v-list-item :prepend-avatar="comment.Commenter_Avatar"
+                                                                :title="comment.Commenter_Name"
+                                                                :subtitle="comment.Commenter_Mail"
+                                                                class="mr-3"></v-list-item>
+                                                            <p> {{ comment.Comment_Text }}</p>
+
+                                                        </div>
+                                                        <v-btn icon="$close" size="small" variant="text"></v-btn>
+                                                    </v-col>
+                                                </v-row>
+
 
                                                 <br>
 
                                                 <h4>時間設定</h4>
                                                 <v-divider class="mb-3"></v-divider>
+                                                <div class="d-flex align-center mb-5">
+                                                    <div>
+                                                        <v-chip class="mr-3">
+                                                            開始時間
+                                                        </v-chip>
+                                                    </div>
+                                                    <input type="date" :value="task.Task_Card_StartTime">
+                                                </div>
+
+                                                <div class="d-flex align-center mb-3">
+                                                    <div>
+                                                        <v-chip class="mr-3">
+                                                            截止時間
+                                                        </v-chip>
+                                                    </div>
+                                                    <input type="date" :value="task.Task_Card_EndTime">
+                                                </div>
 
                                             </div>
                                         </v-card-text>
@@ -287,11 +328,41 @@
                             </div>
                         </v-card>
                     </template>
-                    <v-btn class="text-none text-subtitle-1 ma-4" color="#5865f2" variant="flat">
-                        新增任務卡
-                    </v-btn>
+                    <!--  -->
+                    <v-dialog v-model="newCard_dialog" persistent width="50%">
+                        <template v-slot:activator="{ props }">
+                            <v-btn v-bind="props" class="text-none text-subtitle-1 ma-4" color="#5865f2" variant="flat">
+                                新增任務卡
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title>
+                                <span class="text-h5">新增任務卡</span>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-text-field label="任務標題" required></v-text-field>
+                                            <v-textarea label="任務描述" required></v-textarea>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue-darken-1" variant="text" @click="newCard_dialog = false">
+                                    Close
+                                </v-btn>
+                                <v-btn color="blue-darken-1" variant="text" @click="newCard_dialog = false">
+                                    Save
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card>
             </template>
+
             <!--  -->
             <v-dialog v-model="newList_dialog" persistent width="50%">
                 <template v-slot:activator="{ props }">
@@ -321,6 +392,7 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
         </div>
     </AppWrapper>
 </template>
@@ -337,6 +409,7 @@ export default {
             tab: null,
             model: null,
             newList_dialog: false,
+            newCard_dialog: false,
             checkCard_dialog: false,
 
             Project: {},
@@ -351,19 +424,6 @@ export default {
                 WorksOn_list: [],
                 WorksOn_item: {},
             },
-
-            //
-            tasks: [
-                {
-                    done: false,
-                    text: 'Foobar',
-                },
-                {
-                    done: false,
-                    text: 'Fizzbuzz',
-                },
-            ],
-            newTask: null,
         }
     },
     components: {
@@ -373,23 +433,25 @@ export default {
         ...mapState(UserStatus, ['User']),
 
         completedTasks() {
-            return this.tasks.filter(task => task.done).length
+            return function (Todos) {
+                return Todos.filter(todo => !todo.Todo_Status).length
+            }
         },
-        progress() {
-            return this.completedTasks / this.tasks.length * 100
-        },
+
         remainingTasks() {
-            return this.tasks.length - this.completedTasks
+            return function (Todos) {
+                return Todos.length - this.completedTasks(Todos)
+            }
         },
 
         // Only show Project_WorksOn which is not in Task_WorksOn 
         filter_Project_WorksOn() {
             return function (Task_WorksOn) {
                 return this.Project.Project_WorksOn.filter(item1 => {
-                        return !Task_WorksOn.some(item2 => {
-                            return Object.keys(item1).every(key => item1[key] === item2[key]);
-                        });
-                    })
+                    return !Task_WorksOn.some(item2 => {
+                        return Object.keys(item1).every(key => item1[key] === item2[key]);
+                    });
+                })
             }
         }
     },
@@ -426,7 +488,6 @@ export default {
             axios.get(url)
                 .then(function (res) {
                     self.Project = res.data.return_data;
-                    // console.log(self.Project);
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -455,7 +516,8 @@ export default {
         },
 
         doneEdit() {
-            console.log("ok")
+            console.log("ok");
+            this.getProject();
         },
     },
 
