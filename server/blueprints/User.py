@@ -9,10 +9,11 @@ CORS(User_bp)
 # query 範例:
 # http://127.0.0.1:5001/User?type=sign-in
 # http://127.0.0.1:5001/User?type=sign-up
-@User_bp.route('/User', methods=['POST'])
+@User_bp.route('/User', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def User_operation():
+    type = request.args.get('type')
+    
     if request.method == 'POST':
-        type = request.args.get('type')
         # 登入功能，回傳 User 資訊
         if (type == "sign-in"):
             # post_data format

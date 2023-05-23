@@ -3,18 +3,18 @@
         <!-- https://vuetifyjs.com/en/components/buttons/#discord-event -->
         <div class="pa-5 task-container overflow-x-auto">
             <h2 class="mb-2">{{ this.Project.Project_Name }}</h2>
-            <template v-for="list in Task_List" :key="list.Task_List_ID">
+            <template v-for="list in Project.Task_List" :key="list.Task_List_ID">
                 <v-card class="mr-5 task-card" color="#36393f" theme="dark" variant="flat">
                     <v-sheet color="#202225">
                         <v-card-item>
                             <template v-slot:prepend>
-                                <v-chip v-if="list.Task_List_Status" class="bg-green"><strong>進行中</strong></v-chip>
-                                <v-chip v-else class="bg-grey"><strong>已完成</strong></v-chip>
+                                <v-chip v-if="list.Task_List_Status" class="bg-green" link>進行中</v-chip>
+                                <v-chip v-else class="bg-grey" link><strong>已完成</strong></v-chip>
                             </template>
 
                             <!-- edit title -->
                             <input
-                                v-if="list.Task_List_ID === cache.Task_List_item.Task_List_ID && cache.edit_target === 'Task_List_Name'"
+                                v-if="list.Task_List_ID === cache.Task_List_item.Task_List_ID && edit_target === 'Task_List_Name'"
                                 type="text" class="pl-1 w-100 bg-grey-lighten-5"
                                 v-model="cache.Task_List_item.Task_List_Name" @keyup.esc="edit_TaskList()"
                                 @blur="edit_TaskList()" @keyup.enter="doneEdit()">
@@ -34,18 +34,16 @@
                             <v-card-item>
                                 <v-card-title class="text-body-2 d-flex align-center mb-2">
                                     <div>
-                                        <v-chip class="mr-3 bg-green">已完成</v-chip>
+                                        <v-chip v-if="task.Task_Card_Status" class="mr-3 bg-green" link>進行中</v-chip>
+                                        <v-chip v-else class="mr-3 bg-grey" link>已完成</v-chip>
                                     </div>
 
                                     <v-spacer></v-spacer>
 
-                                    <v-avatar image="https://cdn.vuetifyjs.com/images/john-smirk.png"
-                                        size="x-small"></v-avatar>
-
                                     <div>
                                         <v-chip class="ms-2 text-medium-emphasis" color="grey-darken-4"
-                                            prepend-icon="mdi-account-multiple" size="small" text="81"
-                                            variant="flat"></v-chip>
+                                            prepend-icon="mdi-account-multiple" size="small"
+                                            :text="task.Task_WorksOn.length" variant="flat"></v-chip>
                                     </div>
                                 </v-card-title>
 
@@ -53,7 +51,7 @@
                                     <div class="d-flex justify-space-between align-center">
                                         <div class="w-100">
                                             <input
-                                                v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && cache.edit_target === 'Task_Card_Name'"
+                                                v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Name'"
                                                 type="text" class="pl-1 w-100 bg-grey-lighten-5"
                                                 v-model="cache.Task_Card_item.Task_Card_Name" @keyup.esc="edit_TaskCard()"
                                                 @blur="edit_TaskCard()" @keyup.enter="doneEdit()">
@@ -67,9 +65,9 @@
                                     </div>
 
                                     <div class="d-flex justify-space-between mb-3"
-                                        :class="{ 'align-center': task.Task_Card_ID !== cache.Task_Card_item.Task_Card_ID || cache.edit_target !== 'Task_Card_Text' }">
+                                        :class="{ 'align-center': task.Task_Card_ID !== cache.Task_Card_item.Task_Card_ID || edit_target !== 'Task_Card_Text' }">
                                         <v-textarea
-                                            v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && cache.edit_target === 'Task_Card_Text'"
+                                            v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Text'"
                                             v-model="cache.Task_Card_item.Task_Card_Text"
                                             :model-value="cache.Task_Card_item.Task_Card_Text"
                                             @blur="edit_TaskCard()"></v-textarea>
@@ -81,14 +79,14 @@
                                             @click="edit_TaskCard(task, target = 'Task_Card_Text')"></v-btn>
                                     </div>
                                     <div>
-                                        <v-tooltip text="1 Fri Dec 16th - 9:00" location="bottom">
+                                        <v-tooltip :text="task.Task_Card_StartTime" location="bottom">
                                             <template v-slot:activator="{ props }">
                                                 <v-chip v-bind="props" class="mr-3">
                                                     開始時間
                                                 </v-chip>
                                             </template>
                                         </v-tooltip>
-                                        <v-tooltip text="1 Fri Dec 17th - 17:00" location="bottom">
+                                        <v-tooltip :text="task.Task_Card_EndTime" location="bottom">
                                             <template v-slot:activator="{ props }">
                                                 <v-chip v-bind="props" class="mr-3">
                                                     截止時間
@@ -112,10 +110,11 @@
                                         <v-card-title class="d-flex align-center justify-space-between">
                                             <div class="d-flex align-center w-75">
                                                 <div>
-                                                    <v-chip v-bind="props" class="mr-3 bg-green">已完成</v-chip>
+                                                    <v-chip v-if="task.Task_Card_Status" class="mr-3 bg-green" link>進行中</v-chip>
+                                                    <v-chip v-else class="mr-3 bg-grey" link>已完成</v-chip>
                                                 </div>
                                                 <input
-                                                    v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && cache.edit_target === 'Task_Card_Name'"
+                                                    v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Name'"
                                                     type="text" class="pl-1 bg-grey-lighten-5 w-100"
                                                     v-model="cache.Task_Card_item.Task_Card_Name" @blur="edit_TaskCard()"
                                                     @keyup.enter="doneEdit()">
@@ -134,9 +133,9 @@
                                                 <h4>任務描述</h4>
                                                 <v-divider class="mb-3"></v-divider>
                                                 <div class="d-flex justify-space-between mb-3"
-                                                    :class="{ 'align-center': task.Task_Card_ID !== cache.Task_Card_item.Task_Card_ID || cache.edit_target !== 'Task_Card_Text' }">
+                                                    :class="{ 'align-center': task.Task_Card_ID !== cache.Task_Card_item.Task_Card_ID || edit_target !== 'Task_Card_Text' }">
                                                     <v-textarea
-                                                        v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && cache.edit_target === 'Task_Card_Text'"
+                                                        v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Text'"
                                                         v-model="cache.Task_Card_item.Task_Card_Text"
                                                         :model-value="cache.Task_Card_item.Task_Card_Text"
                                                         @blur="edit_TaskCard()"></v-textarea>
@@ -155,11 +154,11 @@
                                                     <v-expansion-panel title="查看名單">
                                                         <v-expansion-panel-text>
                                                             <v-row>
-                                                                <v-col v-for="collaborator in task.collaborators" cols="12"
+                                                                <v-col v-for="worker in task.Task_WorksOn" cols="12"
                                                                     class="d-flex align-center justify-space-between">
-                                                                    <v-list-item :prepend-avatar="collaborator.User_Avatar"
-                                                                        :title="collaborator.User_Name"
-                                                                        :subtitle="collaborator.User_Mail"></v-list-item>
+                                                                    <v-list-item :prepend-avatar="worker.User_Avatar"
+                                                                        :title="worker.User_Name"
+                                                                        :subtitle="worker.User_Mail"></v-list-item>
 
                                                                     <v-btn icon="$close" size="small"
                                                                         variant="text"></v-btn>
@@ -167,10 +166,11 @@
                                                             </v-row>
                                                             <v-row>
                                                                 <v-col cols="12">
-                                                                    <v-autocomplete v-model="this.cache.collaborators_lists"
-                                                                        :items="task.collaborators" chips closable-chips
-                                                                        color="blue-grey-lighten-2" item-title="name"
-                                                                        item-value="name" label="Select" multiple>
+                                                                    <v-autocomplete v-model="cache.WorksOn_list"
+                                                                        :items="filter_Project_WorksOn(task.Task_WorksOn)"
+                                                                        chips closable-chips color="blue-grey-lighten-2"
+                                                                        item-title="name" item-value="name" label="Select"
+                                                                        multiple>
                                                                         <template v-slot:chip="{ props, item }">
                                                                             <v-chip v-bind="props"
                                                                                 :prepend-avatar="item.raw.User_Avatar"
@@ -338,18 +338,18 @@ export default {
             model: null,
             newList_dialog: false,
             checkCard_dialog: false,
-            
+
             Project: {},
-            Task_List: [],
+
             // caches are used for update, they should always be empty objects when not updating.
+            edit_target: "",
             cache: {
-                edit_target: "",
                 Task_List_item: {},
                 Task_Card_item: {},
                 Todo_item: {},
                 Comment_item: {},
-                collaborators_list: [],
-                collaborator_item: {},
+                WorksOn_list: [],
+                WorksOn_item: {},
             },
 
             //
@@ -381,6 +381,17 @@ export default {
         remainingTasks() {
             return this.tasks.length - this.completedTasks
         },
+
+        // Only show Project_WorksOn which is not in Task_WorksOn 
+        filter_Project_WorksOn() {
+            return function (Task_WorksOn) {
+                return this.Project.Project_WorksOn.filter(item1 => {
+                        return !Task_WorksOn.some(item2 => {
+                            return Object.keys(item1).every(key => item1[key] === item2[key]);
+                        });
+                    })
+            }
+        }
     },
     methods: {
         ...mapActions(UserStatus, ['checkAuth']),
@@ -396,17 +407,17 @@ export default {
         isObjEmpty(obj) {
             return Object.keys(obj).length === 0;
         },
-        
+
         clearCache() {
             let cache = {
-                edit_target: "",
                 Task_List_item: {},
                 Task_Card_item: {},
                 Todo_item: {},
                 Comment_item: {},
-                collaborators_item: {},
+                WorksOn_item: {},
             }
             this.cache = JSON.parse(JSON.stringify(cache)); // DeepCopy
+            this.edit_target = ""
         },
 
         getProject() {
@@ -414,29 +425,16 @@ export default {
             let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&type=specified`;
             axios.get(url)
                 .then(function (res) {
-                    self.Project = res.data.return_data
-                    console.log(self.Project)
+                    self.Project = res.data.return_data;
+                    // console.log(self.Project);
                 })
                 .catch(function (err) {
                     console.log(err);
                 })
         },
 
-        getTaskList() {
-            let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/Task_List?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&type=all`;
-            axios.get(url)
-                .then(function (res) {
-                    self.Task_List = res.data.return_data
-                    console.log(self.Task_List)
-                })
-                .catch(function (err) {
-                    console.log(err);
-                })
-        },
-        
         edit_TaskList(list = {}, target = "") {
-            this.cache.edit_target = target;
+            this.edit_target = target;
             // if ckick the </v-btn icon="$edit"> once again
             if (list.Task_List_ID === this.cache.Task_List_item.Task_List_ID) {
                 this.clearCache()
@@ -447,7 +445,7 @@ export default {
         },
 
         edit_TaskCard(task = {}, target = "") {
-            this.cache.edit_target = target;
+            this.edit_target = target;
             if (task.Task_Card_ID === this.cache.Task_Card_item.Task_Card_ID) {
                 this.clearCache()
             } else {
@@ -460,13 +458,13 @@ export default {
             console.log("ok")
         },
     },
+
     mounted() {
         (async () => {
-			await this.checkAuth();
-            await this.getTaskList();
+            await this.checkAuth();
             await this.getProject();
-		})();
-        
+        })();
+
         // console.log(this.$route.query.Project_ID)
     }
 }

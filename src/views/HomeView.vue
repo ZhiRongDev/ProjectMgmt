@@ -148,7 +148,7 @@ export default {
 		...mapActions(UserStatus, ['checkAuth']),
 		getProject_List() {
 			let self = this;
-			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&type=all`;
+			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&type=list`;
 			axios.get(url)
 				.then(function (res) {
 					console.log(res);
@@ -235,7 +235,7 @@ export default {
 		delete_Project() {
 			// console.log(this.cache.Project_ID);
 			let self = this;
-			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&Project_ID=${this.cache.Project_ID}&type=specified`;
+			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&Project_ID=${this.cache.Project_ID}`;
 			axios.delete(url)
 				.then(function (res) {
 					console.log(res);
