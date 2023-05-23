@@ -240,9 +240,10 @@
                                                                         class="d-flex align-center justify-space-between py-2">
                                                                         <div class="d-flex align-center">
                                                                             <v-chip v-if="todo.Todo_Status"
-                                                                                @click="doneEdit()" class="mr-3 bg-green" link>進行中</v-chip>
-                                                                            <v-chip v-else @click="doneEdit()" class="mr-3 bg-grey"
-                                                                                link>已完成</v-chip>
+                                                                                @click="doneEdit()" class="mr-3 bg-green"
+                                                                                link>進行中</v-chip>
+                                                                            <v-chip v-else @click="doneEdit()"
+                                                                                class="mr-3 bg-grey" link>已完成</v-chip>
                                                                             <p
                                                                                 :class="todo.Todo_Status && 'text-success' || 'text-grey'">
                                                                                 {{ todo.Todo_Text }}</p>
@@ -376,7 +377,7 @@
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field label="名稱" required></v-text-field>
+                                    <v-text-field label="輸入列表名稱" required></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -388,6 +389,45 @@
                         </v-btn>
                         <v-btn color="blue-darken-1" variant="text" @click="newList_dialog = false">
                             Save
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <!--  -->
+            <v-dialog v-model="Project_WorksOn_dialog" persistent width="50%">
+                <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" size="large" class="mr-5 d-inline-block bg-primary">成員列表</v-btn>
+                </template>
+                <v-card>
+                    <v-card-title>
+                        <span class="text-h5">成員列表</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-text-field label="輸入信箱新增成員" required></v-text-field>
+                                    <v-row>
+                                        <v-col v-for="worker in Project.Project_WorksOn" cols="12"
+                                            class="d-flex align-center justify-space-between">
+                                            <v-list-item :prepend-avatar="worker.User_Avatar" :title="worker.User_Name"
+                                                :subtitle="worker.User_Mail"></v-list-item>
+
+                                            <v-btn icon="$close" size="small" variant="text"></v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue-darken-1" variant="text" @click="Project_WorksOn_dialog = false">
+                            Close
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -411,6 +451,7 @@ export default {
             newList_dialog: false,
             newCard_dialog: false,
             checkCard_dialog: false,
+            Project_WorksOn_dialog: false,
 
             Project: {},
 
