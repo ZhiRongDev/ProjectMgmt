@@ -1,10 +1,10 @@
 # https://github.com/corydolphin/flask-cors/blob/master/examples/blueprints_based_example.py
-
 from flask import Flask, jsonify, request, Response
 from blueprints.User import User_bp
 from blueprints.Project import Project_bp
-from blueprints.Task_List import Task_List_bp
 from blueprints.WorksOn import WorksOn_bp
+from blueprints.Task_List import Task_List_bp
+from blueprints.Task_Card import Task_Card_bp
 
 # instantiate the app
 app = Flask(__name__)
@@ -12,8 +12,9 @@ app.config.from_object(__name__)
 
 app.register_blueprint(User_bp)
 app.register_blueprint(Project_bp)
-app.register_blueprint(Task_List_bp)
 app.register_blueprint(WorksOn_bp)
+app.register_blueprint(Task_List_bp)
+app.register_blueprint(Task_Card_bp)
 
 if __name__ == '__main__':
     app.run()

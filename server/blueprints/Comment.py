@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, Response, Blueprint
 from flask_cors import CORS
 
-Todo_bp = Blueprint('Todo', __name__)
+Comment_bp = Blueprint('Todo', __name__)
 
 # enable CORS
 CORS(Todo_bp)

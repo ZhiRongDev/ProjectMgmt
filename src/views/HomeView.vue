@@ -194,10 +194,8 @@ export default {
 					self.getProject_List();
 				})
 				.catch(function (err) {
-					console.log(err);
 					self.snackbar_msg = err.response.data;
 					self.snackbar = true;
-					console.log(err);
 				})
 			
 			this.dialog_setting = false
