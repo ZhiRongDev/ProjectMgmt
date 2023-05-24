@@ -7,7 +7,7 @@ Task_List_bp = Blueprint('Task_List', __name__)
 CORS(Task_List_bp)
 
 @Task_List_bp.route('/Task_List', methods=['POST', 'PUT', 'DELETE'])
-def Task_List_operation():
+def Task_List():
     # 表示前端送過來的 Query
     User_ID = request.args.get('User_ID')
     

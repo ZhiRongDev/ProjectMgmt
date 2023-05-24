@@ -1,16 +1,16 @@
 from flask import Flask, jsonify, request, Response, Blueprint
 from flask_cors import CORS
 
-Comment_bp = Blueprint('Comment', __name__)
+Todo_bp = Blueprint('Comment', __name__)
 
 # enable CORS
-CORS(Comment_bp)
+CORS(Todo_bp)
 
 # query 範例:
 # http://127.0.0.1:5001/Comment?User_ID=xxx&Project_ID=xxx&type=Project
 # http://127.0.0.1:5001/Comment?User_ID=xxx&Task_Card_ID=xxx&type=Task_Card
-@Comment_bp.route('/Comment', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def Comment_bp_operstion():
+@Todo.route('/Todo', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def Todo():
     # 表示前端送過來的 Query
     User_ID = request.args.get('User_ID')
     type = request.args.get('type')

@@ -7,155 +7,45 @@ Project_bp = Blueprint('Project', __name__)
 CORS(Project_bp)
 
 # query 範例:
-# http://127.0.0.1:5001/Project?User_ID=xxx&type=list
-# http://127.0.0.1:5001/Project?User_ID=xxx&Project_ID=xxx&type=specified
+# http://127.0.0.1:5001/Project?User_ID=xxx
 @Project_bp.route('/Project', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def Project_operstion():
+def Project():
     # 表示前端送過來的 Query
     User_ID = request.args.get('User_ID')
 
     # if User_ID 存在於資料庫
     if (True):
         if request.method == 'GET':
-            type = request.args.get('type')
-            # 取得 User_ID 相關的所有 Project
-            if(type == 'list'):
-                if(True):
-                    # db return example
-                    return_data = [
-                        {
-                            "Project_ID": "abc",
-                            "Project_Name": "project 1",
-                            "Project_Color": "pink",
-                        },
-                        {
-                            "Project_ID": "def",
-                            "Project_Name": "project 2",
-                            "Project_Color": "blue",
-                        },
-                    ]
-
-                    response_object = {
-                        'status': 'success',
-                        'response': '取得 Project list 成功',
-                        'method': 'GET',
-                        'route': ''
-                    }
-                    response_object["return_data"] = return_data
-                    return jsonify(response_object)
-                # 失敗路徑
-                else:
-                    return Response(
-                        response = "取得 Project 失敗",
-                        status = 400,
-                )
-            
-            # 取得特定 Project_ID 的所有相關資料
-            elif(type == 'specified'):
-                Project_ID = request.args.get('Project_ID')
-                if(True):
-                    # db return example
-                    return_data = {
+            if(True):
+                # db return example
+                return_data = [
+                    {
                         "Project_ID": "abc",
                         "Project_Name": "project 1",
                         "Project_Color": "pink",
-                        "Project_WorksOn": [
-                            {
-                                "User_ID": '123',
-                                "User_Name": 'jordan',
-                                "User_Mail": 'jordan@gmail.com',
-                                "User_Avatar": 'https://randomuser.me/api/portraits/men/1.jpg'
-                            },
-                            {
-                                "User_ID": '456',
-                                "User_Name": 'jenny',
-                                "User_Mail": 'jenny@gmail.com',
-                                "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
-                            },
-                            {
-                                "User_ID": '789',
-                                "User_Name": 'selina',
-                                "User_Mail": 'selina@gmail.com',
-                                "User_Avatar": 'https://randomuser.me/api/portraits/women/82.jpg',
-                            }
-                        ],
-                        "Task_List": [
-                            {
-                                "Task_List_ID": '77889',
-                                "Task_List_Name": 'List1',
-                                "Task_List_Status": True,
-                                "Task_Card": [
-                                    {
-                                        "Task_Card_ID": '54321',
-                                        "Task_Card_Name": 'Card1',
-                                        "Task_Card_Text": 'Card1 text',
-                                        "Task_Card_StartTime": '2018-07-12',
-                                        "Task_Card_EndTime": '2018-07-22',
-                                        "Task_Card_Status": True,
-                                        "Task_WorksOn": [
-                                            {
-                                                "User_ID": '456',
-                                                "User_Name": 'jenny',
-                                                "User_Mail": 'jenny@gmail.com',
-                                                "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
-                                            },
-                                        ],
-                                        "Todo": [
-                                            {
-                                                "Todo_ID": '798234',
-                                                "Todo_Text": 'todo text 1',
-                                                "Todo_Status": False
-                                            },
-                                            {
-                                                "Todo_ID": '923483',
-                                                "Todo_Text": 'todo text 2',
-                                                "Todo_Status": True
-                                            },
-                                            {
-                                                "Todo_ID": '989725',
-                                                "Todo_Text": 'todo text 3',
-                                                "Todo_Status": False
-                                            }
+                    },
+                    {
+                        "Project_ID": "def",
+                        "Project_Name": "project 2",
+                        "Project_Color": "blue",
+                    },
+                ]
 
-                                        ],
-                                        "Comment": [
-                                            {
-                                                "Commenter_ID": '456',
-                                                "Commenter_Name": 'jenny',
-                                                "Comment_Text": '我說了一些事情',
-                                                ## 以下兩個 DB 沒有，但幫我抓
-                                                "Commenter_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
-                                                "Commenter_Mail": 'jenny@gmail.com'
-                                            },
-                                            {
-                                                "Commenter_ID": '456',
-                                                "Commenter_Name": 'jenny',
-                                                "Comment_Text": '我說了一些事情 888',
-                                                ## 以下兩個 DB 沒有，但幫我抓
-                                                "Commenter_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
-                                                "Commenter_Mail": 'jenny@gmail.com'
-                                            }
-                                        ],
-                                    }
-                                ]
-                            },
-                        ],
-                    }
-
-                    response_object = {
-                        'status': 'success',
-                        'response': '取得 specified Project 成功',
-                        'method': 'GET',
-                        'route': ''
-                    }
-                    response_object["return_data"] = return_data
-                    return jsonify(response_object)
-                # 失敗路徑
-                else:
-                    return Response(
-                        response = "失敗",
-                        status = 400,
-                    )
+                response_object = {
+                    'status': 'success',
+                    'response': '取得 Project list 成功',
+                    'method': 'GET',
+                    'route': ''
+                }
+                response_object["return_data"] = return_data
+                return jsonify(response_object)
+            # 失敗路徑
+            else:
+                return Response(
+                    response = "取得 Project 失敗",
+                    status = 400,
+            )            
+                
             
         # 新增專案
         # http://127.0.0.1:5001/Project?User_ID=xxx
@@ -231,6 +121,127 @@ def Project_operstion():
                     response = "失敗",
                     status = 400,
                 )
+    else:
+        return Response(
+            response = "驗證失敗",
+            status = 400,
+        )
+    
+# http://127.0.0.1:5001/Project/Content?User_ID=xxx&Project_ID=xxx
+@Project_bp.route('/Project/Content', methods=['GET'])
+def Project_Content():
+    # 表示前端送過來的 Query
+    User_ID = request.args.get('User_ID')
+
+    # if User_ID 存在於資料庫
+    if (True):
+        if request.method == 'GET':
+            # 取得特定 Project_ID 所有相關內容
+            Project_ID = request.args.get('Project_ID')
+            if(True):
+                # db return example
+                return_data = {
+                    "Project_ID": "abc",
+                    "Project_Name": "project 1",
+                    "Project_Color": "pink",
+                    "Project_WorksOn": [
+                        {
+                            "User_ID": '123',
+                            "User_Name": 'jordan',
+                            "User_Mail": 'jordan@gmail.com',
+                            "User_Avatar": 'https://randomuser.me/api/portraits/men/1.jpg'
+                        },
+                        {
+                            "User_ID": '456',
+                            "User_Name": 'jenny',
+                            "User_Mail": 'jenny@gmail.com',
+                            "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                        },
+                        {
+                            "User_ID": '789',
+                            "User_Name": 'selina',
+                            "User_Mail": 'selina@gmail.com',
+                            "User_Avatar": 'https://randomuser.me/api/portraits/women/82.jpg',
+                        }
+                    ],
+                    "Task_List": [
+                        {
+                            "Task_List_ID": '77889',
+                            "Task_List_Name": 'List1',
+                            "Task_List_Status": True,
+                            "Task_Card": [
+                                {
+                                    "Task_Card_ID": '54321',
+                                    "Task_Card_Name": 'Card1',
+                                    "Task_Card_Text": 'Card1 text',
+                                    "Task_Card_StartTime": '2018-07-12',
+                                    "Task_Card_EndTime": '2018-07-22',
+                                    "Task_Card_Status": True,
+                                    "Task_WorksOn": [
+                                        {
+                                            "User_ID": '456',
+                                            "User_Name": 'jenny',
+                                            "User_Mail": 'jenny@gmail.com',
+                                            "User_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                                        },
+                                    ],
+                                    "Todo": [
+                                        {
+                                            "Todo_ID": '798234',
+                                            "Todo_Text": 'todo text 1',
+                                            "Todo_Status": False
+                                        },
+                                        {
+                                            "Todo_ID": '923483',
+                                            "Todo_Text": 'todo text 2',
+                                            "Todo_Status": True
+                                        },
+                                        {
+                                            "Todo_ID": '989725',
+                                            "Todo_Text": 'todo text 3',
+                                            "Todo_Status": False
+                                        }
+
+                                    ],
+                                    "Comment": [
+                                        {
+                                            "Commenter_ID": '456',
+                                            "Commenter_Name": 'jenny',
+                                            "Comment_Text": '我說了一些事情',
+                                            ## 以下兩個 DB 沒有，但幫我抓
+                                            "Commenter_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                                            "Commenter_Mail": 'jenny@gmail.com'
+                                        },
+                                        {
+                                            "Commenter_ID": '456',
+                                            "Commenter_Name": 'jenny',
+                                            "Comment_Text": '我說了一些事情 888',
+                                            ## 以下兩個 DB 沒有，但幫我抓
+                                            "Commenter_Avatar": 'https://randomuser.me/api/portraits/women/81.jpg',
+                                            "Commenter_Mail": 'jenny@gmail.com'
+                                        }
+                                    ],
+                                }
+                            ]
+                        },
+                    ],
+                }
+
+                response_object = {
+                    'status': 'success',
+                    'response': '取得 specified Project 成功',
+                    'method': 'GET',
+                    'route': ''
+                }
+                response_object["return_data"] = return_data
+                return jsonify(response_object)
+            # 失敗路徑
+            else:
+                return Response(
+                    response = "失敗",
+                    status = 400,
+                )    
+
     else:
         return Response(
             response = "驗證失敗",

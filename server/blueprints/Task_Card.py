@@ -9,7 +9,7 @@ CORS(Task_Card_bp)
 # query 範例:
 # http://127.0.0.1:5001/Task_Card?User_ID=xxx
 @Task_Card_bp.route('/Task_Card', methods=['POST', 'PUT', 'DELETE'])
-def Task_Card_operstion():
+def Task_Card():
     # 表示前端送過來的 Query
     User_ID = request.args.get('User_ID')
 

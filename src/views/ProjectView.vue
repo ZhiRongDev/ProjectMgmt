@@ -567,7 +567,7 @@ export default {
 
         getProject() {
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&type=specified`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Project/Content?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}`;
             axios.get(url)
                 .then(function (res) {
                     self.Project = res.data.return_data;
@@ -619,14 +619,19 @@ export default {
         },
 
         // https://stackoverflow.com/questions/61776432/how-to-unset-focus-on-an-input-after-keyup-enter-event-in-vuejs
-        update_Task_List(event, put_data = {}) {
+        update_Task_List(event = "", put_data = {}) {
+            
+            // console.log(event.target)
+
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Task_List?User_ID=${this.User.User_ID}`;
 
             axios.put(url, put_data)
                 .then(function (res) {
                     self.getProject();
-                    event.target.blur();
+                    if (event.target) {
+                        event.target.blur();
+                    }
                     self.snackbar_msg = res.data.response;
                     self.snackbar = true;
                 })
@@ -636,14 +641,16 @@ export default {
             this.clearCache();
         },
 
-        update_Task_Card(event, put_data = {}) {
+        update_Task_Card(event = "", put_data = {}) {
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Task_Card?User_ID=${this.User.User_ID}`;
 
             axios.put(url, put_data)
                 .then(function (res) {
                     self.getProject();
-                    event.target.blur();
+                    if (event.target) {
+                        event.target.blur();
+                    }
                     self.snackbar_msg = res.data.response;
                     self.snackbar = true;
                 })

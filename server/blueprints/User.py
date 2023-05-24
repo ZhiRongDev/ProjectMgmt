@@ -10,7 +10,7 @@ CORS(User_bp)
 # http://127.0.0.1:5001/User?type=sign-in
 # http://127.0.0.1:5001/User?type=sign-up
 @User_bp.route('/User', methods=['POST'])
-def User_operation():
+def User():
     type = request.args.get('type')
     
     if request.method == 'POST':

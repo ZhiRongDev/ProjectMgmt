@@ -7,7 +7,7 @@ WorksOn_bp = Blueprint('WorksOn', __name__)
 CORS(WorksOn_bp)
 
 @WorksOn_bp.route('/WorksOn', methods=['POST', 'DELETE'])
-def WorksOn_operstion():
+def WorksOn():
     # 表示前端送過來的 Query
     User_ID = request.args.get('User_ID')
 

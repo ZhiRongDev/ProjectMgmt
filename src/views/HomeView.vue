@@ -148,7 +148,7 @@ export default {
 		...mapActions(UserStatus, ['checkAuth']),
 		getProject_List() {
 			let self = this;
-			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}&type=list`;
+			let url = `${import.meta.env.VITE_FLASK_URL}/Project?User_ID=${this.User.User_ID}`;
 			axios.get(url)
 				.then(function (res) {
 					console.log(res);

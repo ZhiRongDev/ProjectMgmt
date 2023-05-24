@@ -4,13 +4,13 @@ from flask_cors import CORS
 Comment_bp = Blueprint('Todo', __name__)
 
 # enable CORS
-CORS(Todo_bp)
+CORS(Comment_bp)
 
 # query 範例:
 # http://127.0.0.1:5001/Todo?User_ID=xxx&Project_ID=xxx&type=Project
 # http://127.0.0.1:5001/Todo?User_ID=xxx&Task_Card_ID=xxx&type=Task_Card
-@Todo_bp.route('/Todo', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def Todo_bp_operstion():
+@Comment_bp.route('/Todo', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def Comment():
     # 表示前端送過來的 Query
     User_ID = request.args.get('User_ID')
     type = request.args.get('type')
