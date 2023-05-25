@@ -1,12 +1,27 @@
 # client
+This template should help get you started developing with Vue 3 in Vite.
 
 ## 報告 PDF 位置
 See [documents](https://github.com/ZhiRongDev/ProjectMgmt/tree/main/documents)
 
-This template should help get you started developing with Vue 3 in Vite.
+## Flask Setup
+```
+$ cd server
+
+$ python3.11 -m venv env
+$ .\env\Scripts\activate
+(env)$
+```
+
+Next install Flask along with the Flask-CORS extension:
+```
+(env)$ pip install Flask==2.2.3 Flask-Cors==3.0.10
+(env)$ flask run --port=5001 --debug
+```
+
+
 
 ## Recommended IDE Setup
-
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
 ## Customize configuration
