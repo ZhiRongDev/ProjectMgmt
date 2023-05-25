@@ -9,6 +9,7 @@
                         <v-card-item>
                             <template v-slot:prepend>
                                 <v-chip v-if="list.Task_List_Status" class="bg-green" link @click="update_Task_List(
+                                    event = '',
                                     put_data = {
                                         'Task_List_ID': list.Task_List_ID,
                                         'Task_List_Status': !list.Task_List_Status
@@ -17,6 +18,7 @@
                                 </v-chip>
 
                                 <v-chip v-else class="bg-grey" link @click="update_Task_List(
+                                    event = '',
                                     put_data = {
                                         'Task_List_ID': list.Task_List_ID,
                                         'Task_List_Status': !list.Task_List_Status
@@ -49,11 +51,17 @@
                                 <v-card-title class="text-body-2 d-flex align-center mb-2">
                                     <div>
                                         <v-chip v-if="task.Task_Card_Status" class="mr-3 bg-green" link @click="update_Task_Card(
+                                            event = '',
                                             put_data = {
                                                 'Task_Card_ID': task.Task_Card_ID,
-                                                'Task_Card_Status': task.Task_Card_Status,
+                                                'Task_Card_Status': !task.Task_Card_Status,
                                             })">進行中</v-chip>
-                                        <v-chip v-else class="mr-3 bg-grey" link>已完成</v-chip>
+                                        <v-chip v-else class="mr-3 bg-grey" link @click="update_Task_Card(
+                                            event = '',
+                                            put_data = {
+                                                'Task_Card_ID': task.Task_Card_ID,
+                                                'Task_Card_Status': !task.Task_Card_Status,
+                                            })">已完成</v-chip>
                                     </div>
 
                                     <v-spacer></v-spacer>
@@ -86,19 +94,26 @@
 
                                     <div class="d-flex justify-space-between mb-3"
                                         :class="{ 'align-center': task.Task_Card_ID !== cache.Task_Card_item.Task_Card_ID || edit_target !== 'Task_Card_Text' }">
-                                        <v-textarea
-                                            v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Text'"
-                                            v-model="cache.Task_Card_item.Task_Card_Text"
-                                            :model-value="cache.Task_Card_item.Task_Card_Text" @blur="edit_Task_Card()"
-                                            @keyup.esc="edit_Task_Card()"
-                                            @keyup.shift.enter="update_Task_Card($event, put_data = cache.Task_Card_item)"></v-textarea>
-                                        <p v-else class="font-weight-light text-medium-emphasis task_card_text"
+
+                                        <div v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Text'"
+                                            class="w-100">
+                                            <v-textarea v-model="cache.Task_Card_item.Task_Card_Text"
+                                                :model-value="cache.Task_Card_item.Task_Card_Text"
+                                                @keyup.esc="edit_Task_Card()"></v-textarea>
+
+                                            <div class="d-flex align-center justify-end">
+                                                <v-btn class="mr-3" color="#5865f2"
+                                                    @click="update_Task_Card($event, put_data = cache.Task_Card_item)">儲存</v-btn>
+                                            </div>
+                                        </div>
+                                        <p v-else class="font-weight-light text-medium-emphasis task_card_text w-100"
                                             @dblclick="edit_Task_Card(task, target = 'Task_Card_Text')">
                                             {{ task.Task_Card_Text }}
                                         </p>
                                         <v-btn icon="$edit" size="small" variant="text"
                                             @click="edit_Task_Card(task, target = 'Task_Card_Text')"></v-btn>
                                     </div>
+
                                     <div>
                                         <v-tooltip :text="task.Task_Card_StartTime" location="bottom">
                                             <template v-slot:activator="{ props }">
@@ -115,6 +130,7 @@
                                             </template>
                                         </v-tooltip>
                                     </div>
+
                                 </div>
                             </v-card-item>
 
@@ -131,15 +147,24 @@
                                         <v-card-title class="d-flex align-center justify-space-between">
                                             <div class="d-flex align-center w-75">
                                                 <div>
-                                                    <v-chip v-if="task.Task_Card_Status" class="mr-3 bg-green"
-                                                        link>進行中</v-chip>
-                                                    <v-chip v-else class="mr-3 bg-grey" link>已完成</v-chip>
+                                                    <v-chip v-if="task.Task_Card_Status" class="mr-3 bg-green" @click="update_Task_Card(
+                                                        event = '',
+                                                        put_data = {
+                                                            'Task_Card_ID': task.Task_Card_ID,
+                                                            'Task_Card_Status': !task.Task_Card_Status,
+                                                        })" link>進行中</v-chip>
+                                                    <v-chip v-else class="mr-3 bg-grey" link @click="update_Task_Card(
+                                                        event = '',
+                                                        put_data = {
+                                                            'Task_Card_ID': task.Task_Card_ID,
+                                                            'Task_Card_Status': !task.Task_Card_Status,
+                                                        })">已完成</v-chip>
                                                 </div>
                                                 <input
                                                     v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Name'"
                                                     type="text" class="pl-1 bg-grey-lighten-5 w-100"
                                                     v-model="cache.Task_Card_item.Task_Card_Name" @blur="edit_Task_Card()"
-                                                    @keyup.enter="doneEdit()">
+                                                    @keyup.enter="update_Task_Card($event, put_data = cache.Task_Card_item)">
                                                 <h4 v-else class="text-h5"
                                                     @dblclick="edit_Task_Card(task, target = 'Task_Card_Name')">
                                                     {{ task.Task_Card_Name }}
@@ -156,12 +181,19 @@
                                                 <v-divider class="mb-3"></v-divider>
                                                 <div class="d-flex justify-space-between mb-3"
                                                     :class="{ 'align-center': task.Task_Card_ID !== cache.Task_Card_item.Task_Card_ID || edit_target !== 'Task_Card_Text' }">
-                                                    <v-textarea
-                                                        v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Text'"
-                                                        v-model="cache.Task_Card_item.Task_Card_Text"
-                                                        :model-value="cache.Task_Card_item.Task_Card_Text"
-                                                        @blur="edit_Task_Card()"></v-textarea>
-                                                    <p v-else class="font-weight-light text-medium-emphasis task_card_text"
+                                                    <div v-if="task.Task_Card_ID === cache.Task_Card_item.Task_Card_ID && edit_target === 'Task_Card_Text'"
+                                                        class="w-100">
+                                                        <v-textarea v-model="cache.Task_Card_item.Task_Card_Text"
+                                                            :model-value="cache.Task_Card_item.Task_Card_Text"></v-textarea>
+
+                                                        <div class="d-flex align-center justify-end">
+                                                            <v-btn class="mr-3" color="#5865f2"
+                                                                @click="update_Task_Card($event, put_data = cache.Task_Card_item)">儲存</v-btn>
+                                                        </div>
+                                                    </div>
+
+                                                    <p v-else
+                                                        class="font-weight-light text-medium-emphasis task_card_text w-100"
                                                         @dblclick="edit_Task_Card(task, target = 'Task_Card_Text')">
                                                         {{ task.Task_Card_Text }}
                                                     </p>
@@ -183,6 +215,7 @@
                                                                         :subtitle="worker.User_Mail"></v-list-item>
 
                                                                     <v-btn icon="$close" size="small"
+                                                                        @click="delete_Task_WorksOn(worker.User_ID)"
                                                                         variant="text"></v-btn>
                                                                 </v-col>
                                                             </v-row>
@@ -210,8 +243,9 @@
                                                             </v-row>
                                                             <v-row>
                                                                 <v-col>
-                                                                    <v-btn class="text-none text-subtitle-1" color="#5865f2"
-                                                                        variant="flat">新增協作者</v-btn>
+                                                                    <v-btn class="float-right text-none text-subtitle-1"
+                                                                        @click="add_Task_WorksOn(task.Task_Card_ID)"
+                                                                        color="#5865f2" variant="flat">新增協作者</v-btn>
                                                                 </v-col>
                                                             </v-row>
                                                         </v-expansion-panel-text>
@@ -224,10 +258,11 @@
                                                 <v-divider class="mb-3"></v-divider>
                                                 <div>
                                                     <v-text-field v-model="cache.Todo_item.Todo_Text" label="請輸入待辦事項"
-                                                        variant="solo" @keydown.enter="addTodo">
+                                                        variant="solo" @keydown.enter="add_Todo(task.Task_Card_ID)">
                                                         <template v-slot:append>
                                                             <v-fade-transition>
-                                                                <v-icon v-if="cache.Todo_item.Todo_Text" @click="addTodo">
+                                                                <v-icon v-if="cache.Todo_item.Todo_Text"
+                                                                    @click="add_Todo(task.Task_Card_ID)">
                                                                     mdi-plus-circle
                                                                 </v-icon>
                                                             </v-fade-transition>
@@ -260,17 +295,21 @@
                                                                     <v-list-item-action
                                                                         class="d-flex align-center justify-space-between py-2">
                                                                         <div class="d-flex align-center">
-                                                                            <v-chip v-if="todo.Todo_Status"
-                                                                                @click="doneEdit()" class="mr-3 bg-green"
-                                                                                link>進行中</v-chip>
-                                                                            <v-chip v-else @click="doneEdit()"
-                                                                                class="mr-3 bg-grey" link>已完成</v-chip>
+                                                                            <v-chip v-if="todo.Todo_Status" @click="update_Todo(put_data = {
+                                                                                'Todo_ID': todo.Todo_ID,
+                                                                                'Todo_Status': !todo.Todo_Status
+                                                                            })" class="mr-3 bg-green" link>進行中</v-chip>
+                                                                            <v-chip v-else @click="update_Todo(put_data = {
+                                                                                'Todo_ID': todo.Todo_ID,
+                                                                                'Todo_Status': !todo.Todo_Status
+                                                                            })" class="mr-3 bg-grey" link>已完成</v-chip>
                                                                             <p
                                                                                 :class="todo.Todo_Status && 'text-success' || 'text-grey'">
                                                                                 {{ todo.Todo_Text }}</p>
                                                                         </div>
 
                                                                         <v-btn density="compact" icon="mdi-close"
+                                                                            @click="delete_Todo(todo.Todo_ID)"
                                                                             class="mr-3"></v-btn>
                                                                     </v-list-item-action>
                                                                 </v-list-item>
@@ -285,10 +324,11 @@
                                                 <h4>留言區</h4>
                                                 <v-divider class="mb-3"></v-divider>
                                                 <v-text-field v-model="cache.Comment_item.Commenter_Name" label="請輸入留言"
-                                                    variant="solo" @keydown.enter="">
+                                                    variant="solo" @keydown.enter="add_Comment()">
                                                     <template v-slot:append>
                                                         <v-fade-transition>
-                                                            <v-icon v-if="cache.Comment_item.Commenter_Name" @click="">
+                                                            <v-icon v-if="cache.Comment_item.Commenter_Name"
+                                                                @click="add_Comment()">
                                                                 mdi-plus-circle
                                                             </v-icon>
                                                         </v-fade-transition>
@@ -306,7 +346,8 @@
                                                             <p> {{ comment.Comment_Text }}</p>
 
                                                         </div>
-                                                        <v-btn icon="$close" size="small" variant="text"></v-btn>
+                                                        <v-btn icon="$close" size="small" variant="text"
+                                                            @click="delete_Comment(comment.Commenter_ID)"></v-btn>
                                                     </v-col>
                                                 </v-row>
 
@@ -321,7 +362,10 @@
                                                             開始時間
                                                         </v-chip>
                                                     </div>
-                                                    <input type="date" :value="task.Task_Card_StartTime">
+                                                    <input type="date" :value="task.Task_Card_StartTime" @change="update_Task_Card(event = $event, put_data = {
+                                                        'Task_Card_ID': task.Task_Card_ID,
+                                                        'Task_Card_StartTime': $event.currentTarget.value
+                                                    })">
                                                 </div>
 
                                                 <div class="d-flex align-center mb-3">
@@ -330,7 +374,10 @@
                                                             截止時間
                                                         </v-chip>
                                                     </div>
-                                                    <input type="date" :value="task.Task_Card_EndTime">
+                                                    <input type="date" :value="task.Task_Card_EndTime" @change="update_Task_Card(event = $event, put_data = {
+                                                        'Task_Card_ID': task.Task_Card_ID,
+                                                        'Task_Card_EndTime': $event.currentTarget.value
+                                                    })">
                                                 </div>
 
                                             </div>
@@ -401,7 +448,7 @@
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field label="輸入列表名稱" required
+                                    <v-text-field label="輸入列表名稱" required clearable
                                         v-model="cache.Task_List_item.Task_List_Name"></v-text-field>
                                 </v-col>
                             </v-row>
@@ -433,14 +480,16 @@
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field label="輸入信箱新增成員" required v-model="cache.WorksOn_Email" @keyup.enter="add_WorksOn()"></v-text-field>
+                                    <v-text-field label="輸入信箱新增成員" required clearable v-model="cache.WorksOn_Email"
+                                        @keyup.enter="add_Project_WorksOn()"></v-text-field>
                                     <v-row>
                                         <v-col v-for="worker in Project.Project_WorksOn" cols="12"
                                             class="d-flex align-center justify-space-between">
                                             <v-list-item :prepend-avatar="worker.User_Avatar" :title="worker.User_Name"
                                                 :subtitle="worker.User_Mail"></v-list-item>
 
-                                            <v-btn icon="$close" size="small" variant="text" @click="delete_WorksOn(worker.User_ID)"></v-btn>
+                                            <v-btn icon="$close" size="small" variant="text"
+                                                @click="delete_Project_WorksOn(worker.User_ID)"></v-btn>
                                         </v-col>
                                     </v-row>
                                 </v-col>
@@ -539,14 +588,6 @@ export default {
     },
     methods: {
         ...mapActions(UserStatus, ['checkAuth']),
-        addTodo() {
-            this.tasks.push({
-                done: false,
-                text: this.newTask,
-            })
-
-            this.newTask = null
-        },
 
         isObjEmpty(obj) {
             return Object.keys(obj).length === 0;
@@ -558,7 +599,7 @@ export default {
                 Task_Card_item: {},
                 Todo_item: {},
                 Comment_item: {},
-                WorksOn_list: [],
+                WorksOn_list: [], // Used in Todo List, to show Project WorksOn
                 WorksOn_Email: "",
             }
             this.cache = JSON.parse(JSON.stringify(cache)); // DeepCopy
@@ -571,6 +612,7 @@ export default {
             axios.get(url)
                 .then(function (res) {
                     self.Project = res.data.return_data;
+                    self.clearCache()
                 })
                 .catch(function (err) {
                     self.snackbar_msg = err.response.data;
@@ -619,10 +661,8 @@ export default {
         },
 
         // https://stackoverflow.com/questions/61776432/how-to-unset-focus-on-an-input-after-keyup-enter-event-in-vuejs
+        // 注意 javascript 沒有具名參數，兩個參數如果沒有值也要傳空值進去
         update_Task_List(event = "", put_data = {}) {
-            
-            // console.log(event.target)
-
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Task_List?User_ID=${this.User.User_ID}`;
 
@@ -645,6 +685,8 @@ export default {
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Task_Card?User_ID=${this.User.User_ID}`;
 
+            console.log(event)
+
             axios.put(url, put_data)
                 .then(function (res) {
                     self.getProject();
@@ -658,6 +700,23 @@ export default {
                     console.log(err);
                 })
             this.clearCache();
+        },
+
+        update_Todo(put_data = {}) {
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Todo?User_ID=${this.User.User_ID}`;
+
+            axios.put(url, put_data)
+                .then(function (res) {
+                    self.getProject();
+                    self.snackbar_msg = res.data.response;
+                    self.snackbar = true;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+            this.clearCache();
+
         },
 
         delete_Task_List(Task_List_ID) {
@@ -680,6 +739,68 @@ export default {
             console.log(Task_Card_ID)
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Task_Card?User_ID=${this.User.User_ID}&Task_Card_ID=${Task_Card_ID}`;
+
+            axios.delete(url)
+                .then(function (res) {
+                    self.getProject();
+                    self.snackbar_msg = res.data.response;
+                    self.snackbar = true;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+        },
+
+        delete_Project_WorksOn(Worker_ID) {
+            console.log(Worker_ID)
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Project_WorksOn?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&Worker_ID=${Worker_ID}`;
+
+            axios.delete(url)
+                .then(function (res) {
+                    self.getProject();
+                    self.snackbar_msg = res.data.response;
+                    self.snackbar = true;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+        },
+
+        delete_Task_WorksOn(Worker_ID) {
+            console.log(Worker_ID)
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Task_WorksOn?User_ID=${this.User.User_ID}&Task_ID=${this.$route.query.Project_ID}&Worker_ID=${Worker_ID}`;
+
+            axios.delete(url)
+                .then(function (res) {
+                    self.getProject();
+                    self.snackbar_msg = res.data.response;
+                    self.snackbar = true;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+        },
+
+        delete_Todo(Todo_ID) {
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Todo?User_ID=${this.User.User_ID}&Todo_ID=${Todo_ID}`;
+
+            axios.delete(url)
+                .then(function (res) {
+                    self.getProject();
+                    self.snackbar_msg = res.data.response;
+                    self.snackbar = true;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+        },
+
+        delete_Comment(Commenter_ID) {
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Comment?User_ID=${this.User.User_ID}&Commenter_ID=${Commenter_ID}`;
 
             axios.delete(url)
                 .then(function (res) {
@@ -715,9 +836,9 @@ export default {
             }
         },
 
-        add_WorksOn() {
+        add_Project_WorksOn() {
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn?User_ID=${this.User.User_ID}`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Project_WorksOn?User_ID=${this.User.User_ID}`;
 
             let post_data = {
                 "Project_ID": this.$route.query.Project_ID,
@@ -735,12 +856,13 @@ export default {
                 })
         },
 
-        delete_WorksOn(Worker_ID) {
-            console.log(Worker_ID)
+        add_Comment() {
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}&Worker_ID=${Worker_ID}`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Comment?User_ID=${this.User.User_ID}`;
 
-            axios.delete(url)
+            let post_data = this.cache.Comment_item;
+
+            axios.post(url, post_data)
                 .then(function (res) {
                     self.getProject();
                     self.snackbar_msg = res.data.response;
@@ -751,9 +873,53 @@ export default {
                 })
         },
 
-        doneEdit() {
-            console.log("ok");
-            this.getProject();
+        add_Task_WorksOn(Task_Card_ID) {
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Task_WorksOn?User_ID=${this.User.User_ID}`;
+            let User_ID_List = [];
+
+            for (let i = 0; i < this.cache.WorksOn_list.length; i++) {
+                User_ID_List.push(this.cache.WorksOn_list[i].User_ID);
+            }
+
+            let post_data = {
+                "Task_Card_ID": Task_Card_ID,
+                "User_ID_List": User_ID_List
+            }
+
+            axios.post(url, post_data)
+                .then(function (res) {
+                    self.getProject();
+                    self.snackbar_msg = res.data.response;
+                    self.snackbar = true;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+        },
+
+        add_Todo(Task_Card_ID) {
+            // console.log(Task_Card_ID)
+            // console.log(this.cache.Todo_item)
+            let self = this;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Todo?User_ID=${this.User.User_ID}`;
+
+            let post_data = {
+                "Task_Card_ID": Task_Card_ID,
+                "Todo_ID": Date.now(),
+                "Todo_Text": this.cache.Todo_item.Todo_Text
+            }
+
+            axios.post(url, post_data)
+                .then(function (res) {
+                    self.getProject();
+                    self.snackbar_msg = res.data.response;
+                    self.snackbar = true;
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+
         },
     },
 
@@ -791,4 +957,5 @@ export default {
 
 .task_card_text {
     white-space: initial;
-}</style>
+}
+</style>

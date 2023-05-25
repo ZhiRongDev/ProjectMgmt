@@ -5,6 +5,8 @@ from blueprints.Project import Project_bp
 from blueprints.WorksOn import WorksOn_bp
 from blueprints.Task_List import Task_List_bp
 from blueprints.Task_Card import Task_Card_bp
+from blueprints.Todo import Todo_bp
+from blueprints.Comment import Comment_bp
 
 # instantiate the app
 app = Flask(__name__)
@@ -15,6 +17,8 @@ app.register_blueprint(Project_bp)
 app.register_blueprint(WorksOn_bp)
 app.register_blueprint(Task_List_bp)
 app.register_blueprint(Task_Card_bp)
+app.register_blueprint(Todo_bp)
+app.register_blueprint(Comment_bp)
 
 if __name__ == '__main__':
     app.run()
@@ -23,7 +27,7 @@ if __name__ == '__main__':
 
 @app.route('/example', methods=['POST'])
 def example():
-    # 表示網址有包含 query，例如 /example?User_ID=xxx&query_name=123
+    # 表示網址有包含 query, 例如 /example?User_ID=xxx&query_name=123
     User_ID = request.args.get('User_ID')
     query_name = request.args.get('query_name')
 
@@ -44,7 +48,7 @@ def example():
             # 撈 DB 資料
             # 成功路徑
             if (xxx):
-                # 回傳資料
+                # 回傳資料 (如果是 GET 才需要附上 return_data)
                 return_data = {
                     "User_ID": "123",
                     "User_Name": "jordan",
@@ -62,7 +66,7 @@ def example():
                 response_object["return_data"] = return_data
                 return jsonify(response_object)
                 
-            # 失敗路徑，麻煩根據失敗原因撰寫 Response，會直接顯示在前端
+            # 失敗路徑，麻煩根據失敗原因撰寫 Response, 會直接顯示在前端
             elif:
                 return Response(
                     response = "失敗，帳號錯誤",
@@ -79,4 +83,11 @@ def example():
             response = "驗證失敗",
             status = 400,
         )
+"""
+
+"""
+GET: 根據給予的 xx_ID 回傳資料
+POST: 根據 post_data 新增資料庫
+PUT: 根據 put_data 修改資料庫
+DELETE: 根據給予的 xx_ID 刪除資料
 """

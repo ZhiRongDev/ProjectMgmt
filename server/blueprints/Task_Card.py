@@ -36,17 +36,7 @@ def Task_Card():
                 )
 
 
-        if request.method == 'PUT':
-            # put_data format
-            # {
-            #     "Task_Card_ID": '',
-            #     "Task_Card_Name": '',
-            #     "Task_Card_Text": '',
-            #     "Task_Card_StartTime": '',
-            #     "Task_Card_EndTime": '',
-            #     "Task_Card_Status": '',
-            # }
-
+        elif request.method == 'PUT':
             put_data = request.get_json()
             print(put_data)
             

@@ -176,7 +176,7 @@ def Project_Content():
                                     "Task_Card_Text": 'Card1 text',
                                     "Task_Card_StartTime": '2018-07-12',
                                     "Task_Card_EndTime": '2018-07-22',
-                                    "Task_Card_Status": True,
+                                    "Task_Card_Status": False,
                                     "Task_WorksOn": [
                                         {
                                             "User_ID": '456',
@@ -189,7 +189,7 @@ def Project_Content():
                                         {
                                             "Todo_ID": '798234',
                                             "Todo_Text": 'todo text 1',
-                                            "Todo_Status": False
+                                            "Todo_Status": True
                                         },
                                         {
                                             "Todo_ID": '923483',
