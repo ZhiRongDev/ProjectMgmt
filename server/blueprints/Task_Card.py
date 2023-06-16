@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request, Response, Blueprint
 from flask_cors import CORS
+import sqlite3
+import json
 
 Task_Card_bp = Blueprint('Task_Card', __name__)
 
@@ -19,8 +21,22 @@ def Task_Card():
             post_data = request.get_json()
             print(post_data)
             
+            data = json.loads(post_data)
+
+            print(data)
+
+            # print("測試")
+            # print(User_ID)
+
+            db = sqlite3.connect("./sql/ProjectMgmt.db")
+            cursor = db.cursor()
+
+            cursor.execute("SELECT User_ID FROM user WHERE User_ID={}".format(User_ID))
+            result = cursor.fetchone()
+            pflag = 0
+            
             # 修改成功
-            if(True):
+            if(result != None):
                 response_object = {
                     'status': 'success',
                     'response': '新增 Task_Card 成功',
