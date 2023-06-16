@@ -426,7 +426,7 @@
                                     Close
                                 </v-btn>
                                 <v-btn color="blue-darken-1" variant="text"
-                                    @click="newCard_dialog = false; create_Task_Card(cache.Task_Card_item)">
+                                    @click="newCard_dialog = false; create_Task_Card(cache.Task_Card_item, list.Task_List_ID)">
                                     Save
                                 </v-btn>
                             </v-card-actions>
@@ -639,11 +639,11 @@ export default {
             this.clearCache();
         },
 
-        create_Task_Card(post_data = {}) {
+        create_Task_Card(post_data = {}, Task_List_ID="") {
             let Task_Card_ID = Date.now()
             post_data.Task_Card_ID = Task_Card_ID
+            post_data.Task_List_ID = Task_List_ID
             // console.log(post_data);
-
 
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Task_Card?User_ID=${this.User.User_ID}`;

@@ -16,10 +16,8 @@ def Task_List():
 
     con = sqlite3.connect("./sql/ProjectMgmt.db")
     cur = con.cursor()
-    
     ret = cur.execute(""" SELECT * FROM user WHERE User_ID=? """, (User_ID, ))
     db_result = ret.fetchall()
-
     con.close()
 
     User_exist = False
@@ -84,37 +82,25 @@ def Task_List():
             put_data = request.get_json()
             print(put_data)
             
-
             Task_List_ID = put_data.get('Task_List_ID')
-            Task_List_Name = put_data.get("Task_List_Name")
-            Task_List_Status = put_data.get("Task_List_Status")
-            # print(Task_List_ID, Task_List_Name, Task_List_Status)
+            
+            set_str = ""
+            exe_tuple = ()
+
+            for key, value in put_data.items():
+                if key != 'Task_List_ID':
+                    set_str = set_str + key + "=? "
+                    exe_tuple = exe_tuple + (value, )
+            
+            exe_str = "UPDATE Task_List SET " + set_str + "WHERE Task_List_ID=" + Task_List_ID
 
             put_success = False
-
-            if(Task_List_Name == None):
-                con = sqlite3.connect("./sql/ProjectMgmt.db")
-                cur = con.cursor()
-                cur.execute("""
-                    UPDATE Task_List
-                    SET Task_List_Status=?
-                    WHERE Task_List_ID=?
-                """, (Task_List_Status, Task_List_ID))
-                con.commit()
-                con.close()
-                put_success = True
-
-            elif(Task_List_Status == None):
-                con = sqlite3.connect("./sql/ProjectMgmt.db")
-                cur = con.cursor()
-                cur.execute("""
-                    UPDATE Task_List
-                    SET Task_List_Name=?
-                    WHERE Task_List_ID=?
-                """, (Task_List_Name, Task_List_ID))
-                con.commit()
-                con.close()
-                put_success = True
+            con = sqlite3.connect("./sql/ProjectMgmt.db")
+            cur = con.cursor()
+            cur.execute(exe_str, exe_tuple)
+            con.commit()
+            con.close()
+            put_success = True
 
             # 修改成功
             if(put_success):
