@@ -21,8 +21,8 @@ def User():
             # 取得前端 request
             post_data = request.get_json()
 
-            User_Mail = post_data['User_Mail']
-            User_Password = post_data['User_Password']
+            User_Mail = post_data.get('User_Mail')
+            User_Password = post_data.get('User_Password')
             User_Mail.replace(" ", "")
             User_Password.replace(" ", "")
 
@@ -67,12 +67,13 @@ def User():
         elif (type == "sign-up"):
             # get frontend request
             post_data = request.get_json()
+            print(post_data)
 
-            User_ID = post_data['User_ID']
-            User_Name = post_data['User_Name']
-            User_Mail = post_data['User_Mail']
-            User_Avatar = post_data['User_Avatar']
-            User_Password = post_data['User_Password']
+            User_ID = post_data.get("User_ID")
+            User_Name = post_data.get("User_Name")
+            User_Mail = post_data.get("User_Mail")
+            User_Avatar = post_data.get("User_Avatar")
+            User_Password = post_data.get("User_Password")
             
             User_Name.replace(" ", "")
             User_Mail.replace(" ", "")
@@ -82,7 +83,7 @@ def User():
             # Default return false
             signUp_success = False
 
-            if(User_ID != "" and User_Name != "" and User_Mail != "" and User_Avatar != "" and User_Password != ""):
+            if(User_ID and User_Name and User_Mail and User_Avatar and User_Password):
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
                 

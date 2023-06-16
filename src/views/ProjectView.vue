@@ -625,7 +625,7 @@ export default {
             post_data.Task_List_ID = Task_List_ID
 
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/Task_List?User_ID=${this.User.User_ID}`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Task_List?User_ID=${this.User.User_ID}&Project_ID=${this.$route.query.Project_ID}`;
 
             axios.post(url, post_data)
                 .then(function (res) {
