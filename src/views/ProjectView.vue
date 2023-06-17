@@ -215,7 +215,7 @@
                                                                         :subtitle="worker.User_Mail"></v-list-item>
 
                                                                     <v-btn icon="$close" size="small"
-                                                                        @click="delete_Task_WorksOn(worker.User_ID)"
+                                                                        @click="delete_Task_WorksOn(worker.User_ID, task.Task_Card_ID)"
                                                                         variant="text"></v-btn>
                                                                 </v-col>
                                                             </v-row>
@@ -323,12 +323,12 @@
 
                                                 <h4>留言區</h4>
                                                 <v-divider class="mb-3"></v-divider>
-                                                <v-text-field v-model="cache.Comment_item.Commenter_Name" label="請輸入留言"
-                                                    variant="solo" @keydown.enter="add_Comment()">
+                                                <v-text-field v-model="cache.Comment_item.Comment_Text" label="請輸入留言"
+                                                    variant="solo" @keydown.enter="add_Comment(task.Task_Card_ID)">
                                                     <template v-slot:append>
                                                         <v-fade-transition>
-                                                            <v-icon v-if="cache.Comment_item.Commenter_Name"
-                                                                @click="add_Comment()">
+                                                            <v-icon v-if="cache.Comment_item.Comment_Text"
+                                                                @click="add_Comment(task.Task_Card_ID)">
                                                                 mdi-plus-circle
                                                             </v-icon>
                                                         </v-fade-transition>
@@ -347,7 +347,7 @@
 
                                                         </div>
                                                         <v-btn icon="$close" size="small" variant="text"
-                                                            @click="delete_Comment(comment.Commenter_ID)"></v-btn>
+                                                            @click="delete_Comment(comment.Commenter_ID, comment.Comment_addTime)"></v-btn>
                                                     </v-col>
                                                 </v-row>
 
@@ -767,10 +767,10 @@ export default {
                 })
         },
 
-        delete_Task_WorksOn(Worker_ID) {
+        delete_Task_WorksOn(Worker_ID, Task_Card_ID) {
             console.log(Worker_ID)
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Task_WorksOn?User_ID=${this.User.User_ID}&Task_ID=${this.$route.query.Project_ID}&Worker_ID=${Worker_ID}`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Task_WorksOn?User_ID=${this.User.User_ID}&Task_Card_ID=${Task_Card_ID}&User_ID=${Worker_ID}`;
 
             axios.delete(url)
                 .then(function (res) {
@@ -798,9 +798,9 @@ export default {
                 })
         },
 
-        delete_Comment(Commenter_ID) {
+        delete_Comment(Commenter_ID, Comment_addTime) {
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/Comment?User_ID=${this.User.User_ID}&Commenter_ID=${Commenter_ID}`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Comment?User_ID=${this.User.User_ID}&Commenter_ID=${Commenter_ID}&Comment_addTime=${Comment_addTime}`;
 
             axios.delete(url)
                 .then(function (res) {
@@ -856,11 +856,15 @@ export default {
                 })
         },
 
-        add_Comment() {
+        add_Comment(Task_Card_ID) {
             let self = this;
             let url = `${import.meta.env.VITE_FLASK_URL}/Comment?User_ID=${this.User.User_ID}`;
 
             let post_data = this.cache.Comment_item;
+            post_data.Commenter_ID = this.User.User_ID;
+            post_data.Comment_addTime = Date.now();
+            post_data.Commenter_Name = this.User.User_Name;
+            post_data.Task_Card_ID = Task_Card_ID;
 
             axios.post(url, post_data)
                 .then(function (res) {

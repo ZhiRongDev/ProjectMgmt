@@ -90,11 +90,12 @@ cursor.execute('''
 CREATE TABLE todo  
 (   
     `Todo_ID` varchar(10) NOT NULL,
+    `Todo_addTime` datetime DEFAULT NULL,
     `Todo_Text` varchar(45) DEFAULT NULL,
     `Todo_Status` tinyint(1) DEFAULT NULL,
     `Task_Card_ID` varchar(10) DEFAULT NULL,
 
-    PRIMARY KEY (`Todo_ID`),
+    PRIMARY KEY (`Todo_ID`, `Todo_addTime`),
 
     CONSTRAINT `taskcardidFK` 
     FOREIGN KEY (`Task_Card_ID`) 
@@ -109,11 +110,12 @@ cursor.execute('''
 CREATE TABLE Comment  
 (   
     `Commenter_ID` varchar(10) NOT NULL,
+    `Comment_addTime` datetime DEFAULT NULL,
     `Commenter_Name` varchar(15) DEFAULT NULL,
     `Comment_Text` varchar(60) DEFAULT NULL,
     `Task_Card_ID` varchar(10) DEFAULT NULL,
     
-    PRIMARY KEY (`Commenter_ID`),
+    PRIMARY KEY (`Commenter_ID`, `Comment_addTime`),
 
     CONSTRAINT `taskcardFK` 
     FOREIGN KEY (`Task_Card_ID`) 
