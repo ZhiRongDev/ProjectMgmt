@@ -46,10 +46,15 @@ def Task_Card():
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
     
-                # 預設是 True
                 cur.execute("""
                     INSERT INTO Task_Card VALUES (?, ?, ?, ?, ?, ?, ?)
                 """, (Task_Card_ID, Task_Card_Name, Task_Card_Text, Task_Card_StartTime, Task_Card_EndTime, Task_Card_Status, Task_List_ID))
+
+                con.commit()
+
+                cur.execute("""
+                    INSERT INTO Task_WorksOn VALUES (?, ?)
+                """, (User_ID, Task_Card_ID))
 
                 con.commit()
                 
@@ -90,9 +95,10 @@ def Task_Card():
 
             for key, value in put_data.items():
                 if key != 'Task_Card_ID':
-                    set_str = set_str + key + "=? "
+                    set_str = set_str + key + "=?, "
                     exe_tuple = exe_tuple + (value, )
-
+            
+            set_str =  set_str[:-2]
             exe_str = "UPDATE Task_Card SET " + set_str + "WHERE Task_Card_ID=" + Task_Card_ID
             
             put_success = False

@@ -137,7 +137,7 @@
                             <v-divider></v-divider>
 
                             <div class="pa-4 d-flex align-center justify-end">
-                                <v-dialog v-model="checkCard_dialog" persistent width="100%">
+                                <v-dialog v-model="checkCard_dialog[task.Task_Card_ID]" persistent width="100%">
                                     <template v-slot:activator="{ props }">
                                         <v-btn v-bind="props" class="mr-3 text-none" color="#4f545c" variant="flat">
                                             查看
@@ -173,7 +173,7 @@
                                                     @click="edit_Task_Card(task, target = 'Task_Card_Name')"></v-btn>
                                             </div>
                                             <v-btn icon="$close" size="small" variant="text"
-                                                @click="checkCard_dialog = false"></v-btn>
+                                                @click="checkCard_dialog[task.Task_Card_ID] = false"></v-btn>
                                         </v-card-title>
                                         <v-card-text>
                                             <div>
@@ -383,7 +383,8 @@
                                         </v-card-text>
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="blue-darken-1" variant="text" @click="checkCard_dialog = false">
+                                            <v-btn color="blue-darken-1" variant="text"
+                                                @click="checkCard_dialog[task.Task_Card_ID] = false">
                                                 Close
                                             </v-btn>
                                         </v-card-actions>
@@ -397,7 +398,7 @@
                         </v-card>
                     </template>
                     <!--  -->
-                    <v-dialog v-model="newCard_dialog" persistent width="50%">
+                    <v-dialog v-model="newCard_dialog[list.Task_List_ID]" persistent width="50%">
                         <template v-slot:activator="{ props }">
                             <v-btn v-bind="props" class="text-none text-subtitle-1 ma-4" color="#5865f2" variant="flat">
                                 新增任務卡
@@ -421,11 +422,12 @@
                             </v-card-text>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="blue-darken-1" variant="text" @click="newCard_dialog = false; clearCache()">
+                                <v-btn color="blue-darken-1" variant="text"
+                                    @click="newCard_dialog[list.Task_List_ID] = false; clearCache()">
                                     Close
                                 </v-btn>
                                 <v-btn color="blue-darken-1" variant="text"
-                                    @click="newCard_dialog = false; create_Task_Card(cache.Task_Card_item, list.Task_List_ID)">
+                                    @click="newCard_dialog[list.Task_List_ID] = false; create_Task_Card(cache.Task_Card_item, list.Task_List_ID)">
                                     Save
                                 </v-btn>
                             </v-card-actions>
@@ -534,9 +536,9 @@ export default {
             tab: null,
             model: null,
             newList_dialog: false,
-            newCard_dialog: false,
-            checkCard_dialog: false,
             Project_WorksOn_dialog: false,
+            newCard_dialog: {},
+            checkCard_dialog: {},
 
             Project: {},
 
@@ -611,12 +613,26 @@ export default {
             axios.get(url)
                 .then(function (res) {
                     self.Project = res.data.return_data;
-                    self.clearCache()
+                    self.clearCache();
                 })
                 .catch(function (err) {
                     self.snackbar_msg = err.response.data;
                     self.snackbar = true;
+                    self.$router.push({ path: '/home' })
                 })
+        },
+
+        set_dialog_status() {
+            let self = this;
+            for (let i = 0; i < self.Project.Task_List.length; i++) {
+                let Task_List = self.Project.Task_List[i];
+                self.newCard_dialog[Task_List.Task_List_ID] = false;
+
+                for (let j = 0; j < Task_List.Task_Card.length; j++) {
+                    let Task_Card = Task_List.Task_Card[j];
+                    self.checkCard_dialog[Task_Card.Task_Card_ID] = false;
+                }
+            }
         },
 
         create_Task_List(post_data = {}) {
@@ -638,7 +654,7 @@ export default {
             this.clearCache();
         },
 
-        create_Task_Card(post_data = {}, Task_List_ID="") {
+        create_Task_Card(post_data = {}, Task_List_ID = "") {
             let Task_Card_ID = Date.now()
             post_data.Task_Card_ID = Task_Card_ID
             post_data.Task_List_ID = Task_List_ID
@@ -769,7 +785,7 @@ export default {
         delete_Task_WorksOn(Worker_ID, Task_Card_ID) {
             console.log(Worker_ID)
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Task_WorksOn?User_ID=${this.User.User_ID}&Task_Card_ID=${Task_Card_ID}&User_ID=${Worker_ID}`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/WorksOn/Task_WorksOn?User_ID=${this.User.User_ID}&Task_Card_ID=${Task_Card_ID}&Worker_ID=${Worker_ID}`;
 
             axios.delete(url)
                 .then(function (res) {
@@ -930,6 +946,7 @@ export default {
         (async () => {
             await this.checkAuth();
             await this.getProject();
+            await this.set_dialog_status();
         })();
 
         // console.log(this.$route.query.Project_ID)

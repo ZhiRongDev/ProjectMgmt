@@ -89,9 +89,10 @@ def Task_List():
 
             for key, value in put_data.items():
                 if key != 'Task_List_ID':
-                    set_str = set_str + key + "=? "
+                    set_str = set_str + key + "=?, "
                     exe_tuple = exe_tuple + (value, )
             
+            set_str =  set_str[:-2]
             exe_str = "UPDATE Task_List SET " + set_str + "WHERE Task_List_ID=" + Task_List_ID
 
             put_success = False

@@ -92,8 +92,31 @@ def Project_WorksOn():
             if (Worker_ID and Project_ID):
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
+                
                 cur.execute("DELETE FROM Project_WorksOn WHERE User_ID=? AND Project_ID=?", (Worker_ID, Project_ID))
                 con.commit()
+
+                # Need to delete Task_WorksOn either 
+                ret = cur.execute(f"""
+                    SELECT Task_WorksOn.Task_Card_ID
+                    FROM Task_WorksOn, Task_Card, Task_List, Project
+                    WHERE 
+                        Task_WorksOn.Task_Card_ID = Task_Card.Task_Card_ID AND
+                        Task_Card.Task_List_ID = Task_List.Task_List_ID AND
+                        Task_List.Project_ID = Project.Project_ID AND
+                        Task_WorksOn.User_ID = {User_ID} AND
+                        Project.Project_ID = {Project_ID}
+                """)
+
+                db_result = ret.fetchall()
+
+                for item in db_result:
+                    cur.execute("DELETE FROM Task_WorksOn WHERE User_ID=? AND Task_Card_ID=?", (Worker_ID, item[0]))
+                    con.commit()
+
+                print("Testing !!")
+                print(db_result)
+
                 con.close()
                 del_success = True
 
@@ -181,7 +204,7 @@ def Task_WorksOn():
                     )
         elif request.method == 'DELETE':
             Task_Card_ID = request.args.get('Task_Card_ID')
-            Worker_ID = request.args.get('User_ID')
+            Worker_ID = request.args.get('Worker_ID')
             print(Worker_ID)
             print(Task_Card_ID)
 
@@ -190,7 +213,7 @@ def Task_WorksOn():
             if (Task_Card_ID and Worker_ID):
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
-                cur.execute("DELETE FROM Task_WorksOn WHERE Task_Card_ID=? AND User_ID=?", (Task_Card_ID, Worker_ID))
+                cur.execute("DELETE FROM Task_WorksOn WHERE User_ID=? AND Task_Card_ID=?", (Worker_ID, Task_Card_ID))
                 con.commit()
                 con.close()
                 del_success = True
