@@ -9,7 +9,7 @@
 							label="Email"></v-text-field>
 
 						<v-text-field v-model="User_Password" :readonly="loading" :rules="[required]" clearable
-							label="Password" placeholder="Enter your password"></v-text-field>
+							label="Password" placeholder="Enter your password" type="password"></v-text-field>
 
 						<br>
 						<v-btn @click="signIn()" :disabled="!form" :loading="loading" block color="success" size="large"

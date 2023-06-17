@@ -21,7 +21,8 @@ app.register_blueprint(Todo_bp)
 app.register_blueprint(Comment_bp)
 
 if __name__ == '__main__':
-    app.run()
+    # app.run()
+    app.run(host='127.0.0.1', port=5001)
 
 """ Blueprint 內撰寫的範例格式如下 (變數名稱就直接叫做 query_name, post_data, return_data, response_object......):
 
