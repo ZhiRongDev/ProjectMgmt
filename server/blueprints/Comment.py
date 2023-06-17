@@ -30,28 +30,28 @@ def Comment():
             post_data = request.get_json()
             # print(post_data)
 
+            Comment_ID = post_data.get('Comment_ID')
             Commenter_ID = post_data.get('Commenter_ID')
-            Comment_addTime = post_data.get('Comment_addTime')
             Commenter_Name = post_data.get('Commenter_Name')
             Comment_Text = post_data.get('Comment_Text')
             Task_Card_ID = post_data.get('Task_Card_ID')
 
-            # print(Commenter_ID, Comment_addTime, Commenter_Name, Comment_Text, Task_Card_ID)
+            # print(Commenter_ID, Comment_ID, Commenter_Name, Comment_Text, Task_Card_ID)
             
             post_success = False
 
-            if(Commenter_ID and Comment_addTime and Commenter_Name and Comment_Text and Task_Card_ID):
+            if(Commenter_ID and Comment_ID and Commenter_Name and Comment_Text and Task_Card_ID):
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
     
                 # 預設是 True
                 cur.execute("""
                     INSERT INTO Comment VALUES (?, ?, ?, ?, ?)
-                """, (Commenter_ID, Comment_addTime, Commenter_Name, Comment_Text, Task_Card_ID))
+                """, (Comment_ID, Commenter_ID, Commenter_Name, Comment_Text, Task_Card_ID))
 
                 con.commit()
                 
-                ret = cur.execute(""" SELECT * FROM Comment WHERE Commenter_ID=? AND Comment_addTime=? """, (Commenter_ID, Comment_addTime))
+                ret = cur.execute(""" SELECT * FROM Comment WHERE Commenter_ID=? AND Comment_ID=? """, (Commenter_ID, Comment_ID))
                 db_result = ret.fetchall()
 
                 if (len(db_result) != 0):
@@ -79,15 +79,15 @@ def Comment():
 
         elif request.method == 'DELETE':
             Commenter_ID = request.args.get('Commenter_ID')
-            Comment_addTime = request.args.get('Comment_addTime')
-            # print(Commenter_ID, Comment_addTime)
+            Comment_ID = request.args.get('Comment_ID')
+            # print(Commenter_ID, Comment_ID)
 
             del_success = False
 
-            if (Commenter_ID and Comment_addTime):
+            if (Commenter_ID and Comment_ID):
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
-                cur.execute("DELETE FROM Comment WHERE Commenter_ID=? AND Comment_addTime=?", (Commenter_ID, Comment_addTime))
+                cur.execute("DELETE FROM Comment WHERE Commenter_ID=? AND Comment_ID=?", (Commenter_ID, Comment_ID))
                 con.commit()
                 con.close()
                 del_success = True

@@ -347,10 +347,9 @@
 
                                                         </div>
                                                         <v-btn icon="$close" size="small" variant="text"
-                                                            @click="delete_Comment(comment.Commenter_ID, comment.Comment_addTime)"></v-btn>
+                                                            @click="delete_Comment(comment.Commenter_ID, comment.Comment_ID)"></v-btn>
                                                     </v-col>
                                                 </v-row>
-
 
                                                 <br>
 
@@ -798,9 +797,9 @@ export default {
                 })
         },
 
-        delete_Comment(Commenter_ID, Comment_addTime) {
+        delete_Comment(Commenter_ID, Comment_ID) {
             let self = this;
-            let url = `${import.meta.env.VITE_FLASK_URL}/Comment?User_ID=${this.User.User_ID}&Commenter_ID=${Commenter_ID}&Comment_addTime=${Comment_addTime}`;
+            let url = `${import.meta.env.VITE_FLASK_URL}/Comment?User_ID=${this.User.User_ID}&Commenter_ID=${Commenter_ID}&Comment_ID=${Comment_ID}`;
 
             axios.delete(url)
                 .then(function (res) {
@@ -862,7 +861,7 @@ export default {
 
             let post_data = this.cache.Comment_item;
             post_data.Commenter_ID = this.User.User_ID;
-            post_data.Comment_addTime = Date.now();
+            post_data.Comment_ID = Date.now();
             post_data.Commenter_Name = this.User.User_Name;
             post_data.Task_Card_ID = Task_Card_ID;
 

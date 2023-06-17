@@ -33,8 +33,8 @@ def Task_List():
             Task_List_Name = post_data.get('Task_List_Name')
             Task_List_Status = True
 
-            if(Task_List_Name):
-                Task_List_Name.replace(" ", "")
+            # if(Task_List_Name):
+            #     Task_List_Name.replace(" ", "")
 
             post_success = False
 
