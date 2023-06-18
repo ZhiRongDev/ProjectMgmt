@@ -245,7 +245,6 @@ export default {
 					console.log(err);
 					self.snackbar_msg = err.response.data;
 					self.snackbar = true;
-					console.log(err);
 				})
 
 			this.clearCache();

@@ -92,33 +92,35 @@ def Project_WorksOn():
             if (Worker_ID and Project_ID):
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
-                
-                cur.execute("DELETE FROM Project_WorksOn WHERE User_ID=? AND Project_ID=?", (Worker_ID, Project_ID))
-                con.commit()
 
-                # Need to delete Task_WorksOn either 
-                ret = cur.execute(f"""
-                    SELECT Task_WorksOn.Task_Card_ID
-                    FROM Task_WorksOn, Task_Card, Task_List, Project
-                    WHERE 
-                        Task_WorksOn.Task_Card_ID = Task_Card.Task_Card_ID AND
-                        Task_Card.Task_List_ID = Task_List.Task_List_ID AND
-                        Task_List.Project_ID = Project.Project_ID AND
-                        Task_WorksOn.User_ID = {User_ID} AND
-                        Project.Project_ID = {Project_ID}
-                """)
+                ret = cur.execute(f"SELECT * FROM Project WHERE Project_ID = {Project_ID}")
+                Project_Mgr_result = ret.fetchone()
 
-                db_result = ret.fetchall()
-
-                for item in db_result:
-                    cur.execute("DELETE FROM Task_WorksOn WHERE User_ID=? AND Task_Card_ID=?", (Worker_ID, item[0]))
+                # if User_ID == Mgr_ID, then allow delete 
+                if (User_ID == Project_Mgr_result[3]):
+                    cur.execute("DELETE FROM Project_WorksOn WHERE User_ID=? AND Project_ID=?", (Worker_ID, Project_ID))
                     con.commit()
 
-                print("Testing !!")
-                print(db_result)
+                    # Need to delete Task_WorksOn either 
+                    ret = cur.execute(f"""
+                        SELECT Task_WorksOn.Task_Card_ID
+                        FROM Task_WorksOn, Task_Card, Task_List, Project
+                        WHERE 
+                            Task_WorksOn.Task_Card_ID = Task_Card.Task_Card_ID AND
+                            Task_Card.Task_List_ID = Task_List.Task_List_ID AND
+                            Task_List.Project_ID = Project.Project_ID AND
+                            Task_WorksOn.User_ID = {User_ID} AND
+                            Project.Project_ID = {Project_ID}
+                    """)
 
-                con.close()
-                del_success = True
+                    db_result = ret.fetchall()
+
+                    for item in db_result:
+                        cur.execute("DELETE FROM Task_WorksOn WHERE User_ID=? AND Task_Card_ID=?", (Worker_ID, item[0]))
+                        con.commit()
+
+                    con.close()
+                    del_success = True
 
             if(del_success):
                 response_object = {
@@ -133,7 +135,7 @@ def Project_WorksOn():
                 return Response(
                     response = "失敗",
                     status = 400,
-                    )
+                )
 
     else:
         return Response(

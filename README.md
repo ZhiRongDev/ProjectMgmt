@@ -1,69 +1,61 @@
-# client
-This template should help get you started developing with Vue 3 in Vite.
+# ProjectMgmt
+1112 Database System final project, a basic project management system for team members.
 
-## 報告 PDF 位置
-See [documents](https://github.com/ZhiRongDev/ProjectMgmt/tree/main/documents)
+Frontend using **Vue.js + Vite + Pinia** and backend using **Flask + sqlite3**, further information were documented in [documents](https://github.com/ZhiRongDev/ProjectMgmt/tree/main/documents).
 
-## Flask Setup
+## Project Setup
+Install the dependency for **client** inside the `root` directory
+
 ```
-$ cd server
+$ npm install
+```
 
-$ python3.11 -m venv env
-$ .\env\Scripts\activate
+(Optional) Set up the virtual environment for **server** inside the `server` directory
+
+```
+$ cd ./server
+$ python -m venv env
+$ ./env/Scripts/activate
+
 (env)$
 ```
 
-Next install Flask along with the Flask-CORS extension:
+Install the dependency for Flask
+
 ```
 (env)$ pip install Flask==2.2.3 Flask-Cors==3.0.10
-(env)$ flask run --port=5001 --debug
+```
+
+Start the client inside the `root` directory
+
+```
+$ npm run dev
+```
+
+Start the server inside the `server` directory
+
+```
+$ flask run --port=5001 --debug
+```
+
+or 
+
+```
+$ python app.py
+```
+
+The sqlite3 db file is `server/sql/ProjectMgmt.db`. You can recreate `ProjectMgmt.db` using this command inside the `server/sql` directory
+
+```
+$ python sql.py
 ```
 
 
-
-## Recommended IDE Setup
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-npm run test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-npm run build
-npm run test:e2e
-```
+## Contributors
+|組員|系級|學號|
+|-|-|-|
+|程至榮|資科碩一|111753151|
+|吳邁龍|資科碩一|111753150|
+|蘇柏鈞|資科碩一|111753133|
+|吳家瑩|資科碩一|111753221|
+|滋宥|資科碩一|111753224|

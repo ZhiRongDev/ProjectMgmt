@@ -48,6 +48,7 @@ def Project():
                         "Project_ID": project_list[0],
                         "Project_Name": project_list[1],
                         "Project_Color": project_list[2],
+                        "Mgr_ID": project_list[3],
                     }
                     return_data.append(new_project)
                         
@@ -181,10 +182,16 @@ def Project():
             if (Project_ID):
                 con = sqlite3.connect("./sql/ProjectMgmt.db")
                 cur = con.cursor()
-                cur.execute("DELETE FROM Project WHERE Project_ID=?", (Project_ID, ))
-                con.commit()
-                con.close()
-                del_success = True
+
+                ret = cur.execute(f"SELECT * FROM Project WHERE Project_ID = {Project_ID}")
+                Project_Mgr_result = ret.fetchone()
+
+                # if User_ID == Mgr_ID, then allow delete 
+                if (User_ID == Project_Mgr_result[3]):
+                    cur.execute("DELETE FROM Project WHERE Project_ID=?", (Project_ID, ))
+                    con.commit()
+                    con.close()
+                    del_success = True
 
             if(del_success):
                 response_object = {
@@ -251,6 +258,7 @@ def Project_Content():
                 return_data["Project_ID"] = Project_ID
                 return_data["Project_Name"] = Project_result[1]
                 return_data["Project_Color"] = Project_result[2]
+                return_data["Mgr_ID"] = Project_result[3]
 
                 # Project_WorksOn
                 Project_WorksOn = []

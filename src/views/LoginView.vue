@@ -47,9 +47,14 @@
 												<v-text-field v-model="cache.User_Avatar" label="Avatar Url*"
 													required></v-text-field>
 											</v-col>
+											<v-col cols="12">
+												<v-avatar color="grey" size="150" rounded="50">
+													<v-img cover
+														:src="cache.User_Avatar"></v-img>
+												</v-avatar>
+											</v-col>
 										</v-row>
 									</v-container>
-									<small>*indicates required field</small>
 								</v-card-text>
 								<v-card-actions>
 									<v-spacer></v-spacer>

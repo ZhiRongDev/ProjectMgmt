@@ -624,13 +624,16 @@ export default {
 
         set_dialog_status() {
             let self = this;
-            for (let i = 0; i < self.Project.Task_List.length; i++) {
-                let Task_List = self.Project.Task_List[i];
-                self.newCard_dialog[Task_List.Task_List_ID] = false;
 
-                for (let j = 0; j < Task_List.Task_Card.length; j++) {
-                    let Task_Card = Task_List.Task_Card[j];
-                    self.checkCard_dialog[Task_Card.Task_Card_ID] = false;
+            if (self.Project.Task_List) {
+                for (let i = 0; i < self.Project.Task_List.length; i++) {
+                    let Task_List = self.Project.Task_List[i];
+                    self.newCard_dialog[Task_List.Task_List_ID] = false;
+
+                    for (let j = 0; j < Task_List.Task_Card.length; j++) {
+                        let Task_Card = Task_List.Task_Card[j];
+                        self.checkCard_dialog[Task_Card.Task_Card_ID] = false;
+                    }
                 }
             }
         },
@@ -650,6 +653,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
             this.clearCache();
         },
@@ -671,6 +676,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
             this.clearCache();
         },
@@ -692,6 +699,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
             this.clearCache();
         },
@@ -713,6 +722,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
             this.clearCache();
         },
@@ -729,6 +740,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
             this.clearCache();
 
@@ -747,6 +760,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -763,6 +778,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -779,6 +796,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -795,6 +814,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -810,6 +831,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -825,6 +848,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -868,6 +893,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -889,6 +916,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -914,6 +943,8 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
         },
 
@@ -937,8 +968,9 @@ export default {
                 })
                 .catch(function (err) {
                     console.log(err);
+                    self.snackbar_msg = err.response.data;
+                    self.snackbar = true;
                 })
-
         },
     },
 
