@@ -15,7 +15,10 @@ $ npm install
 ```
 $ cd ./server
 $ python -m venv env
+
 $ ./env/Scripts/activate
+or
+$ source ./env/bin/activate
 
 (env)$
 ```
@@ -23,7 +26,7 @@ $ ./env/Scripts/activate
 Install the dependency for Flask
 
 ```
-(env)$ pip install Flask==2.2.3 Flask-Cors==3.0.10
+(env)$ pip install -r requirements.txt
 ```
 
 Start the client inside the `root` directory
@@ -49,7 +52,6 @@ The sqlite3 db file is `server/sql/ProjectMgmt.db`. You can recreate `ProjectMgm
 ```
 $ python sql.py
 ```
-
 
 ## Contributors
 |組員|系級|學號|

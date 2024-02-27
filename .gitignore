@@ -29,3 +29,4 @@ coverage
 
 server/__pycache__
 server/env
+server/sql/ProjectMgmt.db
