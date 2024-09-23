@@ -20,9 +20,17 @@ app.register_blueprint(Task_Card_bp)
 app.register_blueprint(Todo_bp)
 app.register_blueprint(Comment_bp)
 
-if __name__ == '__main__':
-    # app.run()
-    app.run(host='127.0.0.1', port=5001)
+def app(environ, start_response):
+        data = b"Hello, World!\n"
+        start_response("200 OK", [
+            ("Content-Type", "text/plain"),
+            ("Content-Length", str(len(data)))
+        ])
+        return iter([data])
+
+# if __name__ == '__main__':
+#     # app.run()
+#     app.run(host='127.0.0.1', port=5001)
 
 """ Blueprint 內撰寫的範例格式如下 (變數名稱就直接叫做 query_name, post_data, return_data, response_object......):
 
