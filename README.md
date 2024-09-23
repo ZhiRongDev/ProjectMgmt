@@ -3,6 +3,8 @@
 
 Frontend using **Vue.js + Vite + Pinia** and backend using **Flask + sqlite3**, further information were documented in [documents](https://github.com/ZhiRongDev/ProjectMgmt/tree/main/documents).
 
+[The website is deployed](https://projectmgmt-fgfs.onrender.com) on render.com.
+
 ## Project Setup
 Install the dependency for **client** inside the `root` directory
 
