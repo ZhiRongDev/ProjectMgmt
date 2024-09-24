@@ -578,8 +578,9 @@ export default {
 
         // Only show Project_WorksOn which is not in Task_WorksOn 
         filter_Project_WorksOn() {
+            let self = this;
             return function (Task_WorksOn) {
-                return this.Project.Project_WorksOn.filter(item1 => {
+                return self.Project.Project_WorksOn.filter(item1 => {
                     return !Task_WorksOn.some(item2 => {
                         return Object.keys(item1).every(key => item1[key] === item2[key]);
                     });
